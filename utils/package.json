@@ -1,0 +1,15 @@
+{
+  "name": "utils",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "convert": "node audacity-labels-to-sync-narr.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "marisa.demeglio@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^4.0.1"
+  }
+}
