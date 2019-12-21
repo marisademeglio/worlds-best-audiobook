@@ -1,4 +1,4 @@
-import { Manifest } from '../common/pubmanifest-parse/manifest.js';
+import { Manifest } from '../common/pubmanifest-parse.min.js';
 import { isImage } from '../common/utils.js';
 
 document.addEventListener("DOMContentLoaded", () => {
