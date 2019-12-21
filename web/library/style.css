@@ -1,0 +1,31 @@
+body {
+    font-family: Arial;
+    margin: 2vw;
+    background-color: black;
+    color: white;
+}
+
+ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+    display: grid;
+    grid-template-rows: auto 6vh;
+    border-radius: 5px;
+    padding: 1vh;
+}
+li a, li a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+li a:last-child {
+    margin-top: 3vh;
+}
+
+li:hover {
+   box-shadow: 0 0 10px gray;
+}

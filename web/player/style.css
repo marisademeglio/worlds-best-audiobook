@@ -1,0 +1,118 @@
+body {
+    font-family: Arial;
+    display: grid;
+    grid-template-rows: 10vh 70vh 20vh;
+    grid-template-columns: 20% auto 20%;
+    background-color: black;
+    color: white;
+}
+
+header {
+    border-bottom: 2px solid gray;
+    box-shadow: 0 2px 2px -2px lightyellow;
+    align-content: center;
+    overflow-y: scroll;
+    grid-column: 1/4;
+    display: grid;
+    grid-template-columns: 80% auto;
+}
+
+header ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0;
+    align-items: center;
+}
+
+
+footer {
+    justify-self: center;
+    margin: auto;
+    grid-column: 2/3;
+    display: grid;
+    grid-template-rows: 50% auto;
+    grid-row-gap: 1vh;
+}
+
+footer #rate {
+    display: grid;
+    grid-template-columns: 20% auto;
+}
+footer #rate span {
+    align-self: center;
+}
+footer #rate #radio-button-hell {
+    display: grid;
+    grid-template-rows: 50% auto;
+    grid-template-columns: repeat(11, auto);
+    grid-gap: 5px;
+}
+footer #rate #radio-button-hell>div {
+    grid-column: 1/12;
+    display: grid;
+    grid-template-columns: subgrid;
+}
+footer #rate #radio-button-hell label {
+    justify-self: center;
+}
+footer #rate #radio-button-hell label:after {
+    content: 'x'
+}
+footer #rate #radio-button-hell input:after {
+    border: solid white;
+    border-width: 0 0 0 5px;
+    
+    
+}
+
+
+footer.disable * {
+    
+}
+
+main {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1/4;
+    /*! grid-row: 2; */
+}
+#pub-info {
+    /*! grid-area: info; */
+}
+#player-toc {
+    overflow-y: scroll;
+}
+
+#player-toc ol {
+    list-style-type: none;
+    line-height: 5vh;
+    padding-left: 0;
+    color: white;
+    grid-column: 1;
+}
+a, a:visited {
+    color: white;
+    padding-left: 1vh;
+}
+#player-page {
+    grid-column: 2/3;
+    margin-top: 5vh;
+    overflow-y: scroll;
+    justify-self: center;
+}
+
+#player-page img {
+    display: block;
+    /*! margin: auto; */
+    justify-content: center;
+}
+
+#player-toc nav[role=doc-toc] a.current, #player-toc nav[role=doc-toc] a.current:visited {
+    background-color: lightyellow;
+    color: black !important;
+    box-shadow: 0 0 5px lightyellow;
+    border-radius: 3px;
+    font-weight: bold;
+    padding: 1vh;
+}
