@@ -52,7 +52,7 @@ for (i = 0; i<points.length; i++) {
 
 syncNarrTemplate.narration = pairs.map(p => {
     return {
-        "audio": `${meta.audiofile}#t=${p.start},${p.end}`
+        "audio": `${meta.audiofile}#t=${p.start.toFixed(2)},${p.end.toFixed(2)}`
     };
 });
 let outfile = `${path.basename(meta.audiofile, path.extname(meta.audiofile))}.json`;
