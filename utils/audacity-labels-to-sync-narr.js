@@ -4,7 +4,7 @@ const program = require('commander');
 program.version('0.0.1');
 program
     .requiredOption('-i, --input <file>', 'Audacity labels file')
-    .requiredOption('-m, --meta <file>', 'Meta JSON file (see example)')
+    .requiredOption('-c, --config <file>', 'Config JSON file (see example)')
     .option('-f, --force', 'Overwrite existing output');
 program.parse(process.argv);
 
@@ -23,7 +23,7 @@ if (!fs.existsSync(path.resolve(__dirname, 'out'))){
 
 
 
-let meta = JSON.parse(fs.readFileSync(path.resolve(__dirname, program.meta)).toString());
+let meta = JSON.parse(fs.readFileSync(path.resolve(__dirname, program.config)).toString());
 let labels = fs.readFileSync(path.resolve(__dirname, program.input));
 let lines = labels.toString().split("\n");
 
