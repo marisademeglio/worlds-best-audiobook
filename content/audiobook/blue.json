@@ -2,7 +2,7 @@
   "@context": ["https://schema.org", "https://www.w3.org/ns/pub-context"],
   "conformsTo": "https://www.w3.org/TR/audiobooks/",
   "type": "Audiobook",
-  "@id": "https://librivox.org/the-blue-fairy-book-by-andrew-lang/",
+  "id": "https://librivox.org/the-blue-fairy-book-by-andrew-lang/",
   "name": "The Blue Fairy Book",
   "author": "Andrew Lang",
   "readBy": "Various",

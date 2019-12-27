@@ -107,6 +107,15 @@ class AudioPlayer {
         }
     }
 
+    getCurrentTime() {
+        if (this.audioElm) {
+            return this.audioElm.currentTime;
+        }
+        else {
+            return 0;
+        }
+    }
+
     setRate(val) {
         console.log(`Audio Player: rate ${val}`);
         this.rate = val;
