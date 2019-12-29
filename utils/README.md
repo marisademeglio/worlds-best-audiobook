@@ -1,19 +1,21 @@
 # utils
 
-## convert
+## add html alternate to audiobook
 
-`npm run convert -- --input ./example/audacity-labels.txt --config ./example/audacity-labels-meta.json`
+`npm run add-html-alternate -- --epub ../content/epub/blue.epub --audiobook ../content/audiobook/blue.json --force`
 
-Produces a Synchronized Narration file with the name of the audio file specified in `audacity-labels-meta.json`.
+* Produces output (in this case) in: `utils/out/The-Blue-Fairy-Book-with-html-alternate`
+* Cleans up a gutenberg EPUB2 file, sorting by chapter. 
+* Only brings over the chapters that appear in the audiobook (the names must match, disregarding case and punctuation)
+* Adds the cleaned-up HTML as `alternate`s for the audiobook reading order items
 
-Does not include HTML yet.
+## add sync narr alternate to audiobook
 
-## split
+`npm run add-sync-narr-alternate -- --audiobook ./out/The-Blue-Fairy-Book-with-html-alternate/blue.json --sync ./example/syncpoints --force`
 
-`npm run gutensplit -- --input ./example/blue.epub --config ./example/blue-config.json`
+* `--audiobook` is an audiobook with HTML alternates
+* `--syncpoints` is a directory containing audacity labels files. They must be named the same as the HTML alternate files, but with a `txt` extension. E.g. `THE-MASTER-CAT;-OR,-PUSS-IN-BOOTS.txt`
 
-Splits a Gutenberg EPUB2 into one-per-chapter HTML5 files. Produces JSON with a reading order. Options provided in `blue-config.json`.
+This script creates a synchronized narration file for each chapter that has a corresponding `txt` file in the `syncpoints` directory. It then associates the synchronized narration JSON with the audiobook reading order item(s).
 
-### TODO: 
-
-* Script to merge audiobook with gutensplit output, plus audacity labels or other timing info, and get an audiobook with sync narr points. 
+It is not required to have syncpoints files for every chapter. If there are not syncpoints for a chapter, it remains as-is and still has an HTML alternate.
