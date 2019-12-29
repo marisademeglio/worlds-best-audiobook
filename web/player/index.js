@@ -73,7 +73,7 @@ async function loadContent(url) {
     if (readingOrderItem) {
         nav.setCurrentTocItem(readingOrderItem.url);
         if (isAudio(readingOrderItem.encodingFormat)) {
-            document.querySelector("#audio-player").innerHTML = '';
+            document.querySelector("#controls").innerHTML = '';
             audio = null;
             if (readingOrderItem.hasOwnProperty('alternate')) {
                 if (readingOrderItem.alternate[0].encodingFormat == "text/html") {
@@ -122,7 +122,8 @@ function loadAudio(url) {
     }
     if (!audio) {
         audio = new AudioPlayer();
-        audio.setControlsArea(document.querySelector("#audio-player"));
+        document.querySelector("#controls").innerHTML = '';
+        audio.setControlsArea(document.querySelector("#controls"));
     }
     
     // -1 means play the whole file
