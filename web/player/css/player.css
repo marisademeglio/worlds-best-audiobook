@@ -78,26 +78,15 @@ footer.disable * {
 #pub-info {
     /*! grid-area: info; */
 }
-#player-toc {
-    overflow-y: scroll;
-}
-
-#player-toc ol {
-    list-style-type: none;
-    line-height: 5vh;
-    padding-left: 0;
-    color: white;
-    grid-column: 1;
-}
 a, a:visited {
     color: white;
     padding-left: 1vh;
 }
 #player-page {
     grid-column: 2/3;
-    margin-top: 5vh;
     overflow-y: scroll;
     justify-self: center;
+    overflow-y: scroll;
 }
 
 #player-page img {
@@ -105,22 +94,12 @@ a, a:visited {
     /*! margin: auto; */
     justify-content: center;
 }
-
-#player-page iframe {
-    overflow-y: scroll;
+iframe {
+    height: 100%;
     background-color: white;
-
-    width: 50vw;
-    height: 100vh;
-
     border-width: 0;
     display: block;
 }
-#player-toc nav[role=doc-toc] a.current, #player-toc nav[role=doc-toc] a.current:visited {
-    background-color: lightyellow;
-    color: black !important;
-    box-shadow: 0 0 5px lightyellow;
-    border-radius: 3px;
-    font-weight: bold;
-    padding: 1vh;
+#player-page iframe {
+    width: 50vw;
 }

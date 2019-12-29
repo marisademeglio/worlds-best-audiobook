@@ -90,11 +90,9 @@ async function initSyncNarration(syncnarrUrl) {
     let syncnarrJson = JSON.parse(data);
     let htmlfile = new URL(syncnarrJson.properties.text, syncnarrUrl).href;
 
-    initIframe(htmlfile, iframeDoc => {
-        narrator.setHtmlDocument(iframeDoc);
-        narrator.loadJson(syncnarrJson);
-    });
-    
+    let iframeDoc = await initIframe(htmlfile, "#player-page");
+    narrator.setHtmlDocument(iframeDoc);
+    narrator.loadJson(syncnarrJson);
 }
 
 function makeButton(label, parentElm) {

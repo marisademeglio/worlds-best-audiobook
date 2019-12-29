@@ -78,7 +78,7 @@ async function loadContent(url) {
             if (readingOrderItem.hasOwnProperty('alternate')) {
                 if (readingOrderItem.alternate[0].encodingFormat == "text/html") {
                     console.log("Player: alternate is HTML");
-                    loadHtml(readingOrderItem.alternate[0].url);
+                    await loadHtml(readingOrderItem.alternate[0].url);
                     loadAudio(readingOrderItem.url);
                 }
                 else if (readingOrderItem.alternate[0].encodingFormat == "application/vnd.syncnarr+json") {
@@ -112,8 +112,8 @@ function loadCover() {
     }
 }
 
-function loadHtml(url) {
-    loadIframe(url, doc => {});
+async function loadHtml(url) {
+   await initIframe(url, "#player-page");
 }
 
 function loadAudio(url) {
@@ -124,17 +124,21 @@ function loadAudio(url) {
         audio = new AudioPlayer();
         audio.setControlsArea(document.querySelector("#audio-player"));
     }
+    
     // -1 means play the whole file
     audio.playClip(url, 0, -1, true, 
-        () => {
+        async src => {
             console.log("Player: end of audio clip");
-            let readingOrderItem = manifest.gotoNextReadingOrderItem();
-            if (readingOrderItem) {
-                loadContent(readingOrderItem.url);
+            if (src == manifest.getCurrentReadingOrderItem().url) {
+                let readingOrderItem = manifest.gotoNextReadingOrderItem();
+                if (readingOrderItem) {
+                    await loadContent(readingOrderItem.url);
+                }
+                else {
+                    console.log("Player: end of book");
+                }
             }
-            else {
-                console.log("Player: end of book");
-            }
+            // else ignore it, sometimes the audio element generates multiple end events
         }
     );
 }

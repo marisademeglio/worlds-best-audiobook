@@ -79,7 +79,7 @@ class AudioPlayer {
         // if the file is playing while the rest of it is downloading,
         // this function will get called a few times
         // we don't want it to reset playback so check that current time is zero before proceeding
-        if (this.audioElm.currentTime == 0) {
+        if (this.audioElm.currentTime == 0 && !this.isPlaying()) {
             console.log("Audio Player: starting playback");
             this.audioElm.currentTime = this.start;
             await this.audioElm.play();
@@ -99,10 +99,13 @@ class AudioPlayer {
                 }
                 this.clipDoneCallback();
             }
-            else if (this.audioElm.currentTime == this.audioElm.duration && this.audioElm.ended) {
+            else if (this.audioElm.currentTime >= this.audioElm.duration && this.audioElm.ended) {
+                this.audioElm.pause();
                 console.log("Audio Player: element ended playback");
+                console.log("this file: ", this.file);
+                console.log("audio elm file: ", this.audioElm.getAttribute('src'));
                 //console.log(`current time: ${this.audioElm.currentTime}`);
-                this.clipDoneCallback();
+                this.clipDoneCallback(this.audioElm.getAttribute('src'));
             }
         }
     }

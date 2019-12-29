@@ -11,3 +11,23 @@
 .-document-playing {
 
 }
+a, a:visited {
+    color: white;
+    padding-left: 1vh;
+}
+nav[role=doc-toc] ol {
+    list-style-type: none;
+    line-height: 5vh;
+    padding-left: 0;
+    color: white;
+    grid-column: 1;
+}
+
+nav[role=doc-toc] a.current, nav[role=doc-toc] a.current:visited {
+    background-color: lightyellow;
+    color: black !important;
+    box-shadow: 0 0 5px lightyellow;
+    border-radius: 3px;
+    font-weight: bold;
+    padding: 1vh;
+}

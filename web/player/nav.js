@@ -1,9 +1,11 @@
 import { fetchFile } from '../common/utils.js';
+import { initIframe } from './iframe.js';
 
 class Nav {
     constructor() {
         this.base = "";
         this.loadContentCallback = null;
+        this.tocdoc = null;
     }
     
     setLoadContentCallback(fn) {
@@ -22,7 +24,7 @@ class Nav {
         }
     }
 
-    async loadHtmlToc(url) {
+    async loadHtmlToc1(url) {
         let tocFile = await fetchFile(url);
         const parser = new DOMParser();
         const tocDoc = parser.parseFromString(tocFile, "text/html");
@@ -38,9 +40,24 @@ class Nav {
             });
         });
     }
-    
+   
+    async loadHtmlToc(url) {
+        this.tocdoc = await initIframe(url, "#player-toc");
+        let navListElms = Array.from(this.tocdoc.querySelectorAll("[role=doc-toc] a"));
+        navListElms.map(navListElm => {
+            navListElm.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (this.loadContentCallback) {
+                    this.loadContentCallback(navListElm.getAttribute('href'));
+                }
+            });
+        });
+    }
+
+
     loadGeneratedToc(data, base) {
         this.base = base;
+        this.tocdoc = document;
         let tocElm = document.querySelector("#player-toc")
         tocElm.innerHTML = `
         <nav role='doc-toc'>
@@ -60,7 +77,7 @@ class Nav {
     }
     
     setCurrentTocItem(url) {
-        let navListElms = Array.from(document.querySelectorAll("[role=doc-toc] a"));
+        let navListElms = Array.from(this.tocdoc.querySelectorAll("[role=doc-toc] a"));
         navListElms.map(elm => elm.classList.remove("current"));
         let currentElm = navListElms.find(elm => new URL(elm.getAttribute('href'), this.base).href == url);
         if (currentElm) {
