@@ -92,6 +92,8 @@ if (!fs.existsSync(out_html)){
         node.removeAttribute('xml:space');
     });
 
+    //utils.writeOut(path.resolve(out, 'all.html'), dom.serialize(), true);
+
     // look at the EPUB NCX
     const tocPath = path.resolve(path.dirname(packageDocPath), select('//opf:item[@id="ncx"]', packagedoc)[0].getAttribute('href'));
 
@@ -129,7 +131,7 @@ if (!fs.existsSync(out_html)){
     //console.log(readingOrder);
 
     readingOrder.map((item, idx) => {
-        let nextItem = idx + 1 < readingOrder.length ? readingOrder[idx + 1] : "END";
+        let nextItem = idx + 1 < readingOrder.length ? readingOrder[idx + 1] : {start: "END"};
         let nodes = [];
         let startElm = bigContentDoc.querySelector("#" + item.start);
         let nextElm = startElm;
@@ -150,6 +152,9 @@ if (!fs.existsSync(out_html)){
 
 
         while (nextElm != null && nextElm.getAttribute("id") != nextItem.start) {
+            if (nextElm.textContent.indexOf("End of the Project Gutenberg EBook") != -1) {
+                    break;
+            }
             nodes.push(nextElm);
             nextElm = nextElm.nextSibling;
         }
