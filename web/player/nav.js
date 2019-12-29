@@ -1,4 +1,4 @@
-import { fetchFile } from '../common/utils.js';
+import { fetchFile, isInViewport } from '../common/utils.js';
 import { initIframe } from './iframe.js';
 
 class Nav {
@@ -82,6 +82,9 @@ class Nav {
         let currentElm = navListElms.find(elm => new URL(elm.getAttribute('href'), this.base).href == url);
         if (currentElm) {
             currentElm.classList.add("current");
+            if (!isInViewport(currentElm, this.tocdoc)) {
+                currentElm.scrollIntoView();
+              }
         }
     }
 }

@@ -2,6 +2,7 @@
 // controls highlight and audio playback
 
 import { AudioPlayer } from './audio.js';
+import { isInViewport } from '../common/utils.js';
 
 class Narrator {
   constructor() {
@@ -79,7 +80,7 @@ class Narrator {
         this.position+1 >= this.items.length);
     }
     else {
-      this.htmlDocument.getElementsByTagName("body")[0].classList.remove("-sync-media-document-playing");
+      this.htmlDocument.getElementsByTagName("body")[0].classList.remove(this.documentPlayingClass);
       console.log("Document done");
       this.onDone();
     }
@@ -110,7 +111,7 @@ class Narrator {
   highlightText(id) {
     let elm = this.htmlDocument.getElementById(id);
     elm.classList.add(this.activeElementClass);
-    if (!isInViewport(elm)) {
+    if (!isInViewport(elm, this.htmlDocument)) {
       elm.scrollIntoView();
     }
     this.onHighlight(id);
@@ -122,16 +123,6 @@ class Narrator {
   }
 
 }
-
-var isInViewport = function (elem) {
-  var bounding = elem.getBoundingClientRect();
-  return (
-      bounding.top >= 0 &&
-      bounding.left >= 0 &&
-      bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
-  );
-};
 
 let groupId = 0;
 // flatten out any nested items

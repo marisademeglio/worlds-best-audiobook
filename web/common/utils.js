@@ -24,4 +24,13 @@ function isAudio(encodingFormat) {
 function isText() {
     return true;
 }
-export { fetchFile, isImage, isAudio, isText };
+function isInViewport(elm, doc) {
+    let bounding = elm.getBoundingClientRect();
+    return (
+        bounding.top >= 0 &&
+        bounding.left >= 0 &&
+        bounding.bottom <= (doc.defaultView.innerHeight || doc.documentElement.clientHeight) &&
+        bounding.right <= (doc.defaultView.innerWidth || doc.documentElement.clientWidth)
+    );
+}
+export { fetchFile, isImage, isAudio, isText, isInViewport };
