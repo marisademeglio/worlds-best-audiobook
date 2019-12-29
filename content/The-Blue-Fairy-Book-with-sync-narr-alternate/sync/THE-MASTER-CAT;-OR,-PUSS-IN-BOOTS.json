@@ -1,0 +1,171 @@
+{
+    "properties": {
+        "text": "../html/THE-MASTER-CAT;-OR,-PUSS-IN-BOOTS.html",
+        "audio": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_14_lang_64kb.mp3",
+        "sync-media-css-class-active": "-active-element",
+        "sync-media-css-class-playing": "-document-playing"
+    },
+    "role": "document",
+    "narration": [
+        {
+            "text": "#sn-0",
+            "audio": "#t=18.97,22.32"
+        },
+        {
+            "text": "#sn-1",
+            "audio": "#t=22.32,45.07"
+        },
+        {
+            "text": "#sn-2",
+            "audio": "#t=45.07,56.74"
+        },
+        {
+            "text": "#sn-3",
+            "audio": "#t=56.74,63.05"
+        },
+        {
+            "text": "#sn-4",
+            "audio": "#t=63.05,76.09"
+        },
+        {
+            "text": "#sn-5",
+            "audio": "#t=76.09,119.51"
+        },
+        {
+            "text": "#sn-6",
+            "audio": "#t=119.51,141.96"
+        },
+        {
+            "text": "#sn-7",
+            "audio": "#t=141.96,153.10"
+        },
+        {
+            "text": "#sn-8",
+            "audio": "#t=153.10,158.30"
+        },
+        {
+            "text": "#sn-9",
+            "audio": "#t=158.30,180.26"
+        },
+        {
+            "text": "#sn-10",
+            "audio": "#t=180.26,195.94"
+        },
+        {
+            "text": "#sn-11",
+            "audio": "#t=195.94,205.15"
+        },
+        {
+            "text": "#sn-12",
+            "audio": "#t=205.15,214.39"
+        },
+        {
+            "text": "#sn-13",
+            "audio": "#t=214.39,218.44"
+        },
+        {
+            "text": "#sn-14",
+            "audio": "#t=218.44,245.02"
+        },
+        {
+            "text": "#sn-15",
+            "audio": "#t=245.02,255.33"
+        },
+        {
+            "text": "#sn-16",
+            "audio": "#t=255.33,287.19"
+        },
+        {
+            "text": "#sn-17",
+            "audio": "#t=287.19,296.11"
+        },
+        {
+            "text": "#sn-18",
+            "audio": "#t=296.11,301.37"
+        },
+        {
+            "text": "#sn-19",
+            "audio": "#t=301.37,307.98"
+        },
+        {
+            "text": "#sn-20",
+            "audio": "#t=307.98,313.86"
+        },
+        {
+            "text": "#sn-21",
+            "audio": "#t=313.86,318.91"
+        },
+        {
+            "text": "#sn-22",
+            "audio": "#t=318.91,327.65"
+        },
+        {
+            "text": "#sn-23",
+            "audio": "#t=327.65,334.32"
+        },
+        {
+            "text": "#sn-24",
+            "audio": "#t=334.32,352.55"
+        },
+        {
+            "text": "#sn-25",
+            "audio": "#t=352.55,375.10"
+        },
+        {
+            "text": "#sn-26",
+            "audio": "#t=375.10,379.80"
+        },
+        {
+            "text": "#sn-27",
+            "audio": "#t=379.80,390.86"
+        },
+        {
+            "text": "#sn-28",
+            "audio": "#t=390.86,397.14"
+        },
+        {
+            "text": "#sn-29",
+            "audio": "#t=397.14,418.29"
+        },
+        {
+            "text": "#sn-30",
+            "audio": "#t=418.29,432.96"
+        },
+        {
+            "text": "#sn-31",
+            "audio": "#t=432.96,437.13"
+        },
+        {
+            "text": "#sn-32",
+            "audio": "#t=437.13,445.42"
+        },
+        {
+            "text": "#sn-33",
+            "audio": "#t=445.42,457.35"
+        },
+        {
+            "text": "#sn-34",
+            "audio": "#t=457.35,461.31"
+        },
+        {
+            "text": "#sn-35",
+            "audio": "#t=461.31,473.06"
+        },
+        {
+            "text": "#sn-36",
+            "audio": "#t=473.06,502.70"
+        },
+        {
+            "text": "#sn-37",
+            "audio": "#t=502.70,507.33"
+        },
+        {
+            "text": "#sn-38",
+            "audio": "#t=507.33,515.50"
+        },
+        {
+            "text": "#sn-39",
+            "audio": "#t=515.50,521.11"
+        }
+    ]
+}
