@@ -168,7 +168,7 @@ if (!fs.existsSync(out_html)){
             === utils.stripPunctuation(item.name).toLowerCase());
     
         audioManifestItem.alternate = {
-            encoding: "text/html",
+            encodingFormat: "text/html",
             url: `html/${item.url}`,
             type: 'LinkedResource'
         };
