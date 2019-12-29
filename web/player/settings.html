@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Settings</title>
+        <link rel="stylesheet" href="css/base.css"/>
+        <style>
+            body {
+                grid-template-columns: 100% !important;
+            }
+        </style>
+        <script src="../common/localdata.js" type="module"></script>
+        <script type="module">
+            import { initdb, deleteAll } from '../common/localdata.js';
+            document.addEventListener("DOMContentLoaded", async () => {
+                let urlSearchParams = new URLSearchParams(document.location.search);
+                if (urlSearchParams.has("from")) {
+                    document
+                        .querySelector("#playerLink")
+                        .setAttribute('href', `../player?q=${urlSearchParams.get('from')}`);
+                }
+                
+                await initdb();
+                document.querySelector("#clearall").addEventListener("click", async event => {
+                    await deleteAll();
+                    document.querySelector("#status").textContent = "Data cleared";
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header>
+            <h1>Settings</h1>
+            <ul>
+                <li><a href="../player" id="playerLink">Back to player</a></li>
+            </ul>
+        </header>
+        <main>
+            <ul>
+                <li><button id="clearall">Clear all data</button> <span>Clear bookmarks and last-read positions</span></li>
+            </ul>
+
+            <p id="status" aria-live="polite"></p>
+        </main>
+        
+    </body>
+
+</html>

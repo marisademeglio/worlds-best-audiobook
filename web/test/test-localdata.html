@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test local data</title>
+        <script type="module" src="../common/localdata.js"></script>
+        <script type="module">
+            import {initdb, deletedb, deleteAll, 
+                    addBookmark, getBookmarks, 
+                    getPosition, removePosition, getPositions,
+                    getLastRead, updateLastRead} from '../common/localdata.js';
+            (async() => {
+                await initdb();
+                
+                await addBookmark({
+                    pubid: "abc",
+                    readingOrderItem: "http://this.url.is.fake",
+                    offset: {
+                        audio: '800s',
+                        text: '#id2'
+                    },
+                    note: 'My favorite part'
+                });
+
+                let posdata = await getBookmarks('abc');
+                console.log('DATA ', posdata);
+
+                await updateLastRead({
+                    pubid: "abc",
+                    readingOrderItem: "http://this.url.is.fake",
+                    offset: {
+                        audio: '300s',
+                        text: '#id1'
+                    }
+                });
+
+                let last = await getLastRead('abc');
+                console.log("LAST ", last.offset.audio);
+
+                last.offset.audio = '222s';
+                await updateLastRead(last);
+                console.log('LAST (updated) ', last.offset.audio);
+
+                
+                await deleteAll();
+                posdata = await getPositions('abc');
+                console.log('AFTER DELETE', posdata);
+                
+            })()
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>

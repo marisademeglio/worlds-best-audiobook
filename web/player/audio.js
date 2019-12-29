@@ -51,7 +51,7 @@ class AudioPlayer {
                 this.audioElm.currentTime = this.start;
             }
             else {
-                console.log(`Audio Player: ${this.audioElm.currentTime} vs ${this.start}`);
+                //console.log(`Audio Player: ${this.audioElm.currentTime} vs ${this.start}`);
                 console.log("Audio Player: close enough, not resetting");
             }
         }
@@ -101,7 +101,7 @@ class AudioPlayer {
             }
             else if (this.audioElm.currentTime == this.audioElm.duration && this.audioElm.ended) {
                 console.log("Audio Player: element ended playback");
-                console.log(`current time: ${this.audioElm.currentTime}`);
+                //console.log(`current time: ${this.audioElm.currentTime}`);
                 this.clipDoneCallback();
             }
         }

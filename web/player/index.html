@@ -2,16 +2,20 @@
 <html>
     <head>
         <title>Player</title>
-        <link rel="stylesheet" href="style.css"/>
-        <link rel="stylesheet" href="drawers.css"/>
+        <link rel="stylesheet" href="css/base.css"/>
+        <link rel="stylesheet" href="css/player.css"/>
+        <!-- <link rel="stylesheet" href="css/drawers.css"/> -->
         <script src="index.js" type="module"></script>
     </head>
     <body>
         <header>
-            <div id="pub-info"></div>
+            <div id="pub-info" aria-live="polite">
+                <p>Nothing open :(</p>
+            </div>
             
             <ul>
                 <li><a href="../library">Back to Library</a></li>
+                <li><a href="settings.html" id="settingsLink">Settings</a></li>
             </ul>
         
         </header>
@@ -19,10 +23,9 @@
             <!-- <input type="checkbox" id="toc-toggle" name="toc-toggle"/>
             <label for="toc-toggle">TOC</label>
              -->
-            <div id="player-toc">
+            <div id="player-toc" aria-live="polite">
             </div>
-            <div id="player-page">
-            <p>Nothing open :(</p>
+            <div id="player-page" aria-live="polite">
             </div>
             <!-- <div id="bookmarks">
                 <ul>
@@ -31,7 +34,7 @@
                 </ul>
             </div> -->
         </main>
-        <footer>
+        <footer id="controls" aria-live="polite">
             <div id="audio-player">
             </div>
             <!-- <div id="rate">

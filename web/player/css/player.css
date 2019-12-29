@@ -1,12 +1,15 @@
 body {
-    font-family: Arial;
     display: grid;
     grid-template-rows: 10vh 70vh 20vh;
     grid-template-columns: 20% auto 20%;
-    background-color: black;
-    color: white;
+    
 }
-
+main {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1/4;
+    /*! grid-row: 2; */
+}
 header {
     border-bottom: 2px solid gray;
     box-shadow: 0 2px 2px -2px lightyellow;
@@ -71,12 +74,7 @@ footer.disable * {
     
 }
 
-main {
-    display: grid;
-    grid-template-columns: subgrid;
-    grid-column: 1/4;
-    /*! grid-row: 2; */
-}
+
 #pub-info {
     /*! grid-area: info; */
 }
@@ -108,6 +106,16 @@ a, a:visited {
     justify-content: center;
 }
 
+#player-page iframe {
+    overflow-y: scroll;
+    background-color: white;
+
+    width: 50vw;
+    height: 100vh;
+
+    border-width: 0;
+    display: block;
+}
 #player-toc nav[role=doc-toc] a.current, #player-toc nav[role=doc-toc] a.current:visited {
     background-color: lightyellow;
     color: black !important;

@@ -1,7 +1,13 @@
-import { Manifest } from '../common/pubmanifest-parse.min.js';
+import { Manifest } from '../common/pubmanifest-parse.js';
 import { isAudio, isText, isImage } from '../common/utils.js';
 import { Nav } from './nav.js';
 import { AudioPlayer } from './audio.js';
+import { initSyncNarration } from './syncnarr.js';
+import { initdb, deleteAll, 
+    addBookmark, getBookmarks, 
+    getPosition, removePosition, getPositions,
+    getLastRead, updateLastRead } from '../common/localdata.js';
+import { initIframe } from './iframe.js';
 
 var manifest;
 var audio;
@@ -9,7 +15,8 @@ var nav;
 
 document.addEventListener("DOMContentLoaded", () => {
     //document.querySelector("#rate").addEventListener("change", e => setRate(e.target.value));
-    document.querySelector("footer").classList.add("disable");
+    //document.querySelector("footer").classList.add("disable");
+    initdb();
 
     let urlSearchParams = new URLSearchParams(document.location.search);
     if (urlSearchParams.has("q")) {
@@ -29,14 +36,20 @@ async function open(url) {
         return;
     }
     else {
-        document.querySelector("footer").classList.remove("disable");
+        //document.querySelector("footer").classList.remove("disable");
     }
+    document.querySelector("#settingsLink").setAttribute('href', `settings.html?from=${url}`)
     loadPubInfo(manifest);
     nav = new Nav();
     nav.setLoadContentCallback(loadContent);
     await nav.loadToc(manifest);
 
-    let readingOrderItem = manifest.getCurrentReadingOrderItem();
+    let lastReadPosition = await getLastRead(manifest.data.id);
+    console.log("Player: last read position is ", lastReadPosition);
+    let readingOrderItem = lastReadPosition ? 
+        manifest.updateCurrentReadingOrderIndex(lastReadPosition.readingOrderItem) 
+        : 
+        manifest.getCurrentReadingOrderItem();
     if (readingOrderItem) {
         loadContent(readingOrderItem.url);
     }
@@ -53,26 +66,35 @@ function loadPubInfo(manifest) {
 }
 
 // load content doc into the content pane
-function loadContent(url) {
+async function loadContent(url) {
     console.log(`Player: loading content ${url}`);
     let readingOrderItem = manifest.updateCurrentReadingOrderIndex(url);
+    savePosition(manifest.getCurrentReadingOrderItem().originalUrl);
     if (readingOrderItem) {
         nav.setCurrentTocItem(readingOrderItem.url);
-        // first see if it has sync narration
-        /* if (manifest.getSyncNarrForCurrentReadingOrderItem()) {
-            // load sync narr
-        }
-        else {*/
-        // otherwise, treat as a single media type
         if (isAudio(readingOrderItem.encodingFormat)) {
-            console.log("Player: content is audio");
-            loadCover();
-            loadAudio(readingOrderItem.url);
+            document.querySelector("#audio-player").innerHTML = '';
+            audio = null;
+            if (readingOrderItem.hasOwnProperty('alternate')) {
+                if (readingOrderItem.alternate[0].encodingFormat == "text/html") {
+                    console.log("Player: alternate is HTML");
+                    loadHtml(readingOrderItem.alternate[0].url);
+                    loadAudio(readingOrderItem.url);
+                }
+                else if (readingOrderItem.alternate[0].encodingFormat == "application/vnd.syncnarr+json") {
+                    console.log("Player: alternate is sync narration");
+                    await initSyncNarration(readingOrderItem.alternate[0].url);
+                }
+            }
+            else {
+                console.log("Player: content is audio");
+                loadCover();
+                loadAudio(readingOrderItem.url);
+            }
+            
+            
+            
         }
-        else if (isText(readingOrderItem.encodingFormat)) {
-
-        }
-        // }
     }
 }
 
@@ -89,6 +111,11 @@ function loadCover() {
         }
     }
 }
+
+function loadHtml(url) {
+    loadIframe(url, doc => {});
+}
+
 function loadAudio(url) {
     if (audio) {
         audio.pause();
@@ -97,6 +124,7 @@ function loadAudio(url) {
         audio = new AudioPlayer();
         audio.setControlsArea(document.querySelector("#audio-player"));
     }
+    // -1 means play the whole file
     audio.playClip(url, 0, -1, true, 
         () => {
             console.log("Player: end of audio clip");
@@ -123,4 +151,17 @@ function setPosition(val) {
     if (audio) {
         audio.setPosition(val);
     }
+}
+
+// note our current position
+function savePosition(url) {
+    console.log("Player: saving last-read position"); 
+    let pos = {
+        pubid: manifest.data.id,
+        readingOrderItem: url,
+    }
+    if (audio) {
+        pos.offset = {audio: audio.getCurrentTime()};
+    }
+    updateLastRead(pos);
 }

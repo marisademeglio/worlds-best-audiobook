@@ -1,0 +1,13 @@
+@import 'base.css';
+
+.-active-element {
+    background-color: lightyellow;
+    color: black !important;
+    box-shadow: 0 0 5px lightyellow;
+    border-radius: 3px;
+    padding: 1vh;
+}
+
+.-document-playing {
+
+}
