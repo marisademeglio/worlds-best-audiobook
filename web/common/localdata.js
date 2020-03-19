@@ -81,7 +81,8 @@ async function updateLastRead(data) {
     let position = await getLastRead(data.pubid);
     // update if exists
     if (position) {
-        await db.put('positions', {...data, id: position.id, type: 'last'});
+        let newPosition  = { ...position, ...data };
+        await db.put('positions', newPosition);
     }
     // else add a new record
     else {
@@ -101,13 +102,8 @@ Required for submitting
 {
     pubid: "PublicationID",
     readingOrderItem: "relativeURL/item.mp3",
-    offset: {
-        audio: '300s',
-        text: '#id3'
-    }
+    offset: 400ms
 }
-
-Where offset contains audio and/or text properties.s
 
 Additional fields added by these functions:
 {

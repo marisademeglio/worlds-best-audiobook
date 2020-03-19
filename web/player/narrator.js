@@ -1,145 +1,178 @@
 // processes sync narr json
 // controls highlight and audio playback
 
-import { AudioPlayer } from './audio.js';
 import { isInViewport } from '../common/utils.js';
+import * as Events from './events.js';
+import * as Audio from './audio.js';
 
-class Narrator {
-  constructor() {
-    this.items = [];
-    this.properties = {};
-    this.htmlDocument = null;
-    this.position = 0;
-    this.audioPlayer = new AudioPlayer();
-    this.onStart = null;
-    this.onPause = null;
-    this.onDone = null;
-    this.onResume = null;
-    this.onCanEscape = null;
-    this.onEscape = null;
-    this.onHighlight = null;
-    this.documentPlayingClass = '-document-playing';
-    this.activeElementClass = '-active-element';
-  }
+let htmlDocument = null;
+let items = [];
+let properties = {};
+let documentPlayingClass = '-document-playing';
+let activeElementClass = '-active-element';
+let textid = '';
+let position = 0;
+let seekToOffsetOneTime = false;
+let offsetTimestamp = 0;
 
-  loadJson(json) {
-    this.properties = json.properties;
-    this.documentPlayingClass = json.properties.hasOwnProperty("sync-media-document-playing") ? 
-      json.properties["sync-media-document-playing"] : this.documentPlayingClass;
-    this.activeElementClass = json.properties.hasOwnProperty("sync-media-active-element") ? 
-      json.properties["sync-media-active-element"] : this.activeElementClass;
-    this.items = flatten(json.narration);
-  }
+/* Narrator events:
+Done
+Highlight
+*/
 
-  setHtmlDocument(doc) {
-    this.htmlDocument = doc;
-  }
+function setHtmlDocument(doc) {
+    htmlDocument = doc;
+}
 
-  start(){
+function loadJson(json, offset) {
+    properties = json.properties;
+    documentPlayingClass = json.properties.hasOwnProperty("sync-media-document-playing") ? 
+      json.properties["sync-media-document-playing"] : documentPlayingClass;
+    activeElementClass = json.properties.hasOwnProperty("sync-media-active-element") ? 
+      json.properties["sync-media-active-element"] : activeElementClass;
+    items = flatten(json.narration);
+    Events.on("Audio.ClipDone", onAudioClipDone);
+
     console.log("Starting");
-    this.onStart();
-    this.position = 0;
-    this.render(this.items[this.position]);
-    this.htmlDocument.getElementsByTagName("body")[0].classList.add(this.documentPlayingClass);
-  }
-
-  pause() {
-    console.log("Pausing");
-    this.onPause();
-    this.audioPlayer.pause();
-  }
-
-  resume() {
-    console.log("Resuming");
-    this.onResume();
-    this.audioPlayer.resume();
-  }
-
-  escape() {
-    console.log("Escape");
-    this.onEscape();
-    this.audioPlayer.pause();
-    let textid = this.items[this.position].text.split("#")[1];
-    this.resetTextStyle(textid);
+    position = offset != 0 ? findOffsetPosition(offset) : 0;
+    if (position != 0) {
+        seekToOffsetOneTime = true;
+        offsetTimestamp = offset;
+    }
     
-    this.position = this.items.slice(this.position).findIndex(thing => thing.groupId !== this.items[this.position].groupId) 
-      + (this.items.length - this.items.slice(this.position).length) - 1;
-    this.next();
-  }
+    render(items[position]);
+    htmlDocument.getElementsByTagName("body")[0].classList.add(documentPlayingClass);
+}
 
-  next() {
-    let textid = this.items[this.position].text.split("#")[1];
+function next() {
+    textid = items[position].text.split("#")[1];
 
-    this.resetTextStyle(textid);
+    resetTextStyle(textid);
     
-    if (this.position+1 < this.items.length) {
-      this.position++;
-      console.log("Loading clip " + this.position);
-      this.render(
-        this.items[this.position],
-        this.position+1 >= this.items.length);
+    if (position+1 < items.length) {
+        position++;
+        console.log("Loading clip " + position);
+        render(
+            items[position],
+            position+1 >= items.length
+        );
     }
     else {
-      this.htmlDocument.getElementsByTagName("body")[0].classList.remove(this.documentPlayingClass);
-      console.log("Document done");
-      this.onDone();
+        htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
+        console.log("Document done");
+        Events.trigger('Narrator.Done');
     }
-  }
+}
 
-  render(item, isLast) {
-    if (item['role'] != '') {
-      // this is a substructure
-      this.onCanEscape(item["role"]);
+function prev() {
+    textid = items[position].text.split("#")[1];
+
+    resetTextStyle(textid);
+    
+    if (position-1 >= 0) {
+        position--;
+        console.log("Loading clip " + position);
+        render(
+            items[position],
+            false
+        );
     }
-    let textid = item.text.split("#")[1];
-    this.highlightText(textid);
+    else {
+        htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
+        console.log("Start of document");
+    }
+}
+
+function render(item, isLast) {
+    /*if (item['role'] != '') {
+        // this is a substructure
+        onCanEscape(item["role"]);
+    }*/
+    textid = item.text.split("#")[1];
+    highlightText(textid);
 
     let audiofile = item.audio.split("#t=")[0];
     if (audiofile == '') {
-      audiofile = this.properties.audio;
+        audiofile = properties.audio;
     }
     let start = item.audio.split("#t=")[1].split(",")[0];
     let end = item.audio.split("#t=")[1].split(",")[1];
 
-    this.audioPlayer.playClip(audiofile, start, end, isLast, ()=>{
-      console.log("Clip done");
-      this.resetTextStyle(textid);
-      this.next();
-    });
-  }
-
-  highlightText(id) {
-    let elm = this.htmlDocument.getElementById(id);
-    elm.classList.add(this.activeElementClass);
-    if (!isInViewport(elm, this.htmlDocument)) {
-      elm.scrollIntoView();
+    if (seekToOffsetOneTime) {
+        start = offsetTimestamp;
+        seekToOffsetOneTime = false;
     }
-    this.onHighlight(id);
-  }
 
-  resetTextStyle(id) {
-    let elm = this.htmlDocument.getElementById(id);
-    elm.classList.remove(this.activeElementClass);
-  }
+    Audio.playClip(audiofile, start, end, isLast);
+}
 
+function onAudioClipDone() {
+    console.log("Clip done");
+    resetTextStyle(textid);
+    next();
+}
+
+function highlightText(id) {
+    let elm = htmlDocument.getElementById(id);
+    elm.classList.add(activeElementClass);
+    if (!isInViewport(elm, htmlDocument)) {
+        elm.scrollIntoView();
+    }
+    Events.trigger("Narrator.Highlight", id);
+}
+
+function resetTextStyle(id) {
+    let elm = htmlDocument.getElementById(id);
+    elm.classList.remove(activeElementClass);
+}
+
+// find the node that includes this offset
+// assuming one audio file per syncnarr document
+function findOffsetPosition(offset) {
+    let idx = items.findIndex(item => {
+        let start = parseFloat(item.audio.split("#t=")[1].split(",")[0]);
+        let end = parseFloat(item.audio.split("#t=")[1].split(",")[1]);
+
+        return start <= offset && end >= offset;        
+    });
+    return idx === -1 ? 0 : idx;
 }
 
 let groupId = 0;
 // flatten out any nested items
-var flatten = function(itemsArr, roleValue) {
-  var flatter = itemsArr.map(item => {
-    if (item.hasOwnProperty("narration")) {
-      groupId++;
-      return flatten(item['narration'], item['role']);
-    }
-    else {
-      item.role = roleValue ? roleValue : '';
-      item.groupId = groupId;
-      return item;
-    }
-  }).reduce((acc, curr) => acc.concat(curr), []);
-  groupId--;
-  return flatter;
+function flatten (itemsArr, roleValue) {
+    var flatter = itemsArr.map(item => {
+        if (item.hasOwnProperty("narration")) {
+            groupId++;
+            return flatten(item['narration'], item['role']);
+        }
+        else {
+            item.role = roleValue ? roleValue : '';
+            item.groupId = groupId;
+            return item;
+        }
+    })
+    .reduce((acc, curr) => acc.concat(curr), []);
+    groupId--;
+    return flatter;
 }
 
-export { Narrator };
+/*
+function escape() {
+    console.log("Escape");
+    
+    let textid = items[position].text.split("#")[1];
+    resetTextStyle(textid);
+
+    position = items.slice(position).findIndex(thing => thing.groupId !== items[position].groupId) 
+        + (items.length - items.slice(position).length) - 1;
+    next();
+}
+*/
+
+export { 
+    loadJson,
+    setHtmlDocument,
+    next,
+    prev
+ };

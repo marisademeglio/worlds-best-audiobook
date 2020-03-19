@@ -1,147 +1,190 @@
-class AudioPlayer {
+import * as Events from './events.js';
 
-    constructor() {
-        this.file = '';
-        this.audioElm = null;
-        this.start = 0;
-        this.end = 0;
-        this.clipDoneCallback = null;
-        this.waitForSeek = false;
-        this.isLastClip = 0;
-        this.parentElm = null;
-        this.volume = .8; // default volume
-        this.rate = 1.0; // default rate
-        console.log("AudioPlayer: constructor");
-    }
-    setControlsArea(elm) {
-        this.parentElm = elm;
-    }
-    setFile(file) {
-        console.log("Audio Player: file = ", file);
-        this.file = file;
-        this.audioElm = new Audio(this.file);
-        this.audioElm.currentTime = 0;
-        this.audioElm.volume = this.volume;
-        this.audioElm.playbackRate = this.rate;
-        if (this.parentElm) {
-            this.parentElm.innerHTML = '';
-            this.audioElm.controls = true;
-            this.parentElm.appendChild(this.audioElm);
-        }
-        this.audioElm.addEventListener('progress', e => { this.onAudioProgress(e) });
-        this.audioElm.addEventListener('timeupdate', e => { this.onAudioTimeUpdate(e) });
-        this.audioElm.addEventListener('volumechange', e => this.volume = e.target.volume );
-    }
+/* Audio events:
+Play
+Pause
+PositionChange
+ClipDone
+*/
 
-    playClip(file, start, end, isLastClip, clipDoneFn) {
-        this.start = parseFloat(start);
-        this.end = parseFloat(end);
-        this.isLastClip = isLastClip;
-        this.clipDoneCallback = clipDoneFn;
-        
-        if (file != this.file) {
-            this.audioElm = null;
-            this.setFile(file);
-        }
-        else {
-            this.waitForSeek = true;
-            // check that the current time is far enough from the desired start time
-            // otherwise it stutters due to the coarse granularity of the browser's timeupdate event
-            if (this.audioElm.currentTime < this.start - .10 || this.audioElm.currentTime > this.start + .10) {
-                this.audioElm.currentTime = this.start;
-            }
-            else {
-                //console.log(`Audio Player: ${this.audioElm.currentTime} vs ${this.start}`);
-                console.log("Audio Player: close enough, not resetting");
-            }
-        }
-    }
+let settings = {
+    volume: 0.8,
+    rate: 1.0
+};
+let clip = {
+    start: 0,
+    end: 0,
+    file: '',
+    isLastClip: false
+};
 
-    pause() {
-        if (this.audioElm) {
-            this.audioElm.pause();
-        }
-    }
+let audio = null;
+let waitForSeek = false;
 
-    async resume() {
-        await this.audioElm.play();
+function loadFile(file) {
+    console.log("Audio Player: file = ", file);
+    clip.file = file;
+    let wasMuted = false;
+    if (audio) {
+        audio.pause();
+        wasMuted = audio.muted;
     }
+    audio = new Audio(file);
+    audio.currentTime = 0;
+    audio.muted = wasMuted;
+    audio.volume = settings.volume;
+    audio.playbackRate = settings.rate;
+    audio.addEventListener('progress', e => { onAudioProgress(e) });
+    audio.addEventListener('timeupdate', e => { onAudioTimeUpdate(e) });
+}
 
-    isPlaying() {
-        return !!(this.audioElm.currentTime > 0 
-            && !this.audioElm.paused 
-            && !this.audioElm.ended 
-            && this.audioElm.readyState > 2);
+function playClip(file, start = 0, end = -1, isLastClip = false) {
+    clip.start = parseFloat(start);
+    clip.end = parseFloat(end);
+    clip.isLastClip = isLastClip;
+    
+    if (file != clip.file) {
+        loadFile(file);
     }
-
-    // this event fires when the file downloads/is downloading
-    async onAudioProgress(event) {
-        // if the file is playing while the rest of it is downloading,
-        // this function will get called a few times
-        // we don't want it to reset playback so check that current time is zero before proceeding
-        if (this.audioElm.currentTime == 0 && !this.isPlaying()) {
-            console.log("Audio Player: starting playback");
-            this.audioElm.currentTime = this.start;
-            await this.audioElm.play();
-        }
-    }
-
-    // this event fires when the playback position changes
-    async onAudioTimeUpdate(event) {
-        if (this.waitForSeek) {
-            this.waitForSeek = false;
-            await this.audioElm.play();
+    else {
+        waitForSeek = true;
+        // check that the current time is far enough from the desired start time
+        // otherwise it stutters due to the coarse granularity of the browser's timeupdate event
+        if (audio.currentTime < clip.start - .10 || audio.currentTime > clip.start + .10) {
+            audio.currentTime = clip.start;
         }
         else {
-            if (this.end != -1 && this.audioElm.currentTime >= this.end) {
-                if (this.isLastClip) {
-                    this.audioElm.pause();
-                }
-                this.clipDoneCallback();
-            }
-            else if (this.audioElm.currentTime >= this.audioElm.duration && this.audioElm.ended) {
-                this.audioElm.pause();
-                console.log("Audio Player: element ended playback");
-                console.log("this file: ", this.file);
-                console.log("audio elm file: ", this.audioElm.getAttribute('src'));
-                //console.log(`current time: ${this.audioElm.currentTime}`);
-                this.clipDoneCallback(this.audioElm.getAttribute('src'));
-            }
-        }
-    }
-
-    getCurrentTime() {
-        if (this.audioElm) {
-            return this.audioElm.currentTime;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    setRate(val) {
-        console.log(`Audio Player: rate ${val}`);
-        this.rate = val;
-        if (this.audioElm) {
-            this.audioElm.playbackRate = val;
-        }
-    }
-
-    // val is a percentage of the total duration
-    setPosition(val) {
-        console.log(`Audio Player: position ${val}`);
-        if (this.audioElm) {
-            this.audioElm.currentTime = this.audioElm.duration * val/100;
-        }
-    }
-
-    setVolume(val) {
-        this.volume = val;
-        console.log(`Audio Player: volume ${val}`);
-        if (this.audioElm) {
-            this.audioElm.volume = val;
+            console.log("Audio Player: close enough, not resetting");
         }
     }
 }
 
-export { AudioPlayer };
+async function pause() {
+    if (audio) {
+        Events.trigger('Audio.Pause');
+        await audio.pause();
+    }
+}
+
+async function resume() {
+    Events.trigger('Audio.Play');
+    await audio.play();
+}
+
+function isPlaying() {
+    return !!(audio.currentTime > 0 
+        && !audio.paused 
+        && !audio.ended 
+        && audio.readyState > 2);
+}
+
+
+// this event fires when the file downloads/is downloading
+async function onAudioProgress(event) {
+        // if the file is playing while the rest of it is downloading,
+        // this function will get called a few times
+        // we don't want it to reset playback so check that current time is zero before proceeding
+    if (audio.currentTime == 0 && !isPlaying()) {
+        console.log("Audio Player: starting playback");
+        audio.currentTime = clip.start;
+        Events.trigger('Audio.Play');
+        await audio.play();
+    }
+}
+
+// this event fires when the playback position changes
+async function onAudioTimeUpdate(event) {
+    Events.trigger('Audio.PositionChange', audio.currentTime, audio.duration);
+    
+    if (waitForSeek) {
+        waitForSeek = false;
+        await audio.play();
+    }
+    else {
+        if (clip.end != -1 && audio.currentTime >= clip.end) {
+            if (clip.isLastClip) {
+                Events.trigger('Audio.Pause');
+                audio.pause();
+            }
+            Events.trigger("Audio.ClipDone");
+        }
+        else if (audio.currentTime >= audio.duration && audio.ended) {
+            Events.trigger('Audio.Pause');
+            audio.pause();
+            console.log("Audio Player: element ended playback");
+            console.log("this file: ", clip.file);
+            Events.trigger("Audio.ClipDone");
+        }
+    }
+}
+
+function setRate(val) {
+    console.log(`Audio Player: rate ${val}`);
+    settings.rate = val;
+    if (audio) {
+        audio.playbackRate = val;
+    }
+}
+
+function setPosition(val) {
+    console.log(`Audio Player: position ${val}`);
+    if (audio) {
+        if (val < 0){ 
+            audio.currentTime = 0;
+        }
+        else if (val > audio.duration) {
+            audio.currentTime = audio.duration;
+        }
+        else {
+            audio.currentTime = val;
+        }
+    }
+}
+
+function setVolume(val) {
+    settings.volume = val;
+    console.log(`Audio Player: volume ${val}`);
+    if (audio) {
+        audio.volume = val;
+    }
+}
+
+function getPosition() {
+    if (audio) {
+        return audio.currentTime;
+    }
+    else {
+        return 0;
+    }
+}
+
+function mute() {
+    if (audio) {
+        audio.muted = true;
+    }
+}
+
+function unmute() {
+    if (audio) {
+        audio.muted = false;
+    }
+}
+function isMuted() {
+    if (audio) {
+        return audio.muted;
+    }
+    return false;
+}
+export { 
+    playClip,
+    isPlaying,
+    pause,
+    resume,
+    setRate,
+    setPosition,
+    getPosition,
+    setVolume,
+    mute,
+    unmute,
+    isMuted
+};
