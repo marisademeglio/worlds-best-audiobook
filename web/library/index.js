@@ -42,10 +42,6 @@ async function populateTitles() {
                 </a>
             `;
             titleListElm.appendChild(titleListItem);
-            // titleListElm.addEventListener("click", (e) => {
-            //     e.preventDefault();
-            //     open(titleData.url);
-            // });
         });  
     });
 }

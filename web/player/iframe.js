@@ -13,18 +13,15 @@ async function initIframe(url, parentId) {
                     iframeStyle.setAttribute('href', new URL('css/pub-default.css', document.location.href));
                     let iframeHead = iframe.contentDocument.querySelector('head');
                     iframeHead.appendChild(iframeStyle);
-                    //loadedFn(iframe.contentDocument);
                     resolve(iframe.contentDocument);
                 }
                 else {
                     console.log("Document has default style, not modifying it");
-                    //loadedFn(iframe.contentDocument);
                     resolve(iframe.contentDocument);
                 }
             }
             else {
                 console.log("can't access iframe content doc");
-                //loadedFn(null);
                 resolve(null);
             }
         };
