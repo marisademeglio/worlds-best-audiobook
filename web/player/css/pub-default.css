@@ -14,9 +14,13 @@
 a, a:visited {
     color: white;
     padding-left: 1vh;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline !important;
 }
 nav[role=doc-toc] ol {
-    list-style-type: none;
+    /* list-style-type: none; */
     line-height: 5vh;
     padding-left: 0;
     color: white;
@@ -30,4 +34,8 @@ nav[role=doc-toc] a.current, nav[role=doc-toc] a.current:visited {
     border-radius: 3px;
     font-weight: bold;
     padding: 1vh;
+}
+nav[role=doc-toc] li {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }

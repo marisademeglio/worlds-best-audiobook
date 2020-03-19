@@ -4,3 +4,11 @@ body {
     color: white;
 }
 
+a, a:visited {
+    color: white;
+    padding-left: 1vh;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline !important;
+}

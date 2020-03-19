@@ -1,0 +1,118 @@
+footer {
+    display: grid;
+    grid-column-gap: 1rem;
+    grid-template-columns: 20% auto 20%;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+    "adjust transport status";
+}
+#adjust {
+    grid-area: adjust;
+    display: grid;
+}
+#transport {
+    grid-area: transport;
+    justify-self: center;
+    display: flex;
+    align-self: center;
+}
+#chapter-progress {
+    grid-area: status;
+    align-self: center;
+    justify-self: right;
+}
+footer div.slider {
+    display: grid;
+    grid-template-columns: 20% 50% 15% 10%;
+    grid-column-gap: 0.5rem;
+    align-content: center;
+}
+footer input {
+    background: black;
+}
+footer input::-moz-range-track{
+    background-color: lightgray;
+    opacity: 70%;
+    height: 5px;
+    border-radius: 5px;
+}
+footer input::-webkit-slider-runnable-track {
+    background-color: lightgray;
+    opacity: 70%;
+    height: 5px;
+    border-radius: 5px;
+}
+footer input::-ms-track {
+    background-color: lightgray;
+    opacity: 70%;
+    height: 5px;
+    border-radius: 5px;
+}
+footer input::-moz-range-thumb {
+    height: 20px;
+    cursor: pointer;
+}
+footer input::-webkit-slider-thumb {
+    height: 20px;
+    cursor: pointer;
+}
+footer input::-ms-thumb {
+    height: 20px;
+    cursor: pointer;
+}
+div.slider.disabled label, div.slider.disabled span {
+    opacity: 40%;
+}
+div.slider.disabled input::-moz-range-track {
+    opacity: 40%;
+}
+div.slider.disabled input::-webkit-slider-runnable-track {
+    opacity: 40%;
+}
+div.slider.disabled input::-ms-track {
+    opacity: 40%;
+}
+div.slider.disabled input::-moz-range-thumb {
+    opacity: 40%;
+    cursor: default;
+}
+div.slider.disabled input::-webkit-slider-thumb {
+    opacity: 40%;
+    cursor: default;
+}
+div.slider.disabled input::-ms-thumb {
+    opacity: 40%;
+    cursor: default;
+}
+
+#transport div.button {
+    width: 4rem;
+    height: 4rem;
+    cursor: pointer;
+}
+path {
+    stroke-width: 5;
+    stroke: white;
+    fill: white;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+svg {
+    opacity: 90%;
+    pointer-events: all;
+}
+svg path:hover {
+    fill: lightyellow;
+    stroke: lightyellow;
+    opacity: 80% !important;
+}
+svg#play-pause path {
+    stroke-width: 15;
+}
+svg#prev {
+    rotate: 180deg;
+}
+#mute, #reset-rate {
+    width: min-content;
+    padding: 0;
+}
