@@ -4,56 +4,109 @@
         <title>Player</title>
         <link rel="stylesheet" href="css/base.css"/>
         <link rel="stylesheet" href="css/player.css"/>
+        <link rel="stylesheet" href="css/controls.css"/>
         <!-- <link rel="stylesheet" href="css/drawers.css"/> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
         <script src="index.js" type="module"></script>
     </head>
     <body>
         <header>
             <div id="pub-info" aria-live="polite">
-                <p>Nothing open :(</p>
+                <p>Nothing open</p>
             </div>
             
-            <ul>
-                <li><a href="../library">Back to Library</a></li>
-                <li><a href="settings.html" id="settingsLink">Settings</a></li>
-            </ul>
+            <nav aria-label="player navigation">
+                <ul>
+                    <li><a href="../library">Back to Library</a></li>
+                    <li><a href="settings.html" id="settingsLink">Settings</a></li>
+                </ul>
+            </nav>
         
         </header>
         <main>
             <!-- <input type="checkbox" id="toc-toggle" name="toc-toggle"/>
             <label for="toc-toggle">TOC</label>
              -->
-            <div id="player-toc" aria-live="polite">
-            </div>
             <div id="player-page" aria-live="polite">
             </div>
-            <!-- <div id="bookmarks">
-                <ul>
-                    <li>Bookmark 1</li>
-                    <li>Bookmark 2</li>
-                </ul>
-            </div> -->
+            
         </main>
-        <footer id="controls" aria-live="polite">
-            <!-- <div id="rate">
-                <span>Rate:</span>
-                <div id="radio-button-hell">
-                    <div>
-                        <label for="rate-050">.5</label>
-                        <label for="rate-100">1</label>
-                        <label for="rate-150">1.5</label>
-                        <label for="rate-200">2</label>
-                        <label for="rate-250">2.5</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="rate" id="rate-050" value=".5">
-                        <input type="radio" name="rate" id="rate-100" value="1.0">
-                        <input type="radio" name="rate" id="rate-150" value="1.50">
-                        <input type="radio" name="rate" id="rate-200" value="2.0">
-                        <input type="radio" name="rate" id="rate-250" value="2.5">
-                    </div>
+        <nav id="player-toc" aria-live="polite" aria-label="book navigation">
+        </nav>
+        <footer id="controls" aria-live="polite" aria-label="playback controls">
+            <div id="adjust">
+                <div id="volume-wrapper" class="slider">
+                    <label for="volume">Volume</label>
+                    <input id="volume" type="range" min="0" max="100">
+                    <span id="volume-value"></span>
+                    <button aria-label="Mute" id="mute" title="Mute">🔇</button>
                 </div>
-            </div> -->
+
+                <div id="rate-wrapper" class="slider">
+                    <label for="rate">Rate</label>
+                    <input id="rate" type="range" min="50" max="200">
+                    <span id="rate-value"></span>
+                    <button id="reset-rate" aria-label="Reset rate" title="Reset rate">1x</button>
+                </div>
+            </div>
+            
+            
+            <div id="transport">
+                <div class="button">
+                    <svg 
+                        id="prev"
+                        version="1.1"
+                        viewBox="0 0 100 100">
+                        <path 
+                            d="M 25 15 V 85 L 50 60 V 85 L 85 50 L 50 15 V 40 Z"
+                            rx="10" ry="10"/>
+                    </svg>
+                </div>
+                <div class="button">
+                    <svg
+                        id="play-pause" 
+                        version="1.1" 
+                        viewBox="0 0 100 100">        
+                        <path d="M 30 15 V 85" rx="10" ry="10" />
+                        <path id='line2' d="M 70 15 V 85" rx="10" ry="10" >
+                            <animate
+                                attributeName="d"
+                                dur="300ms"
+                                from="M 70 15 V 85"
+                                to="M 30 15 L 70 50 L 30 85"
+                                begin="indefinite"
+                                fill="freeze"
+                                id="from-play-to-pause"
+                            />
+                        </path>
+                        <animate
+                            xlink:href="#line2"
+                            attributeName="d"
+                            dur="300ms"
+                            from="M 30 15 L 70 50 L 30 85"
+                            to="M 70 15 V 85"
+                            fill="freeze"
+                            id="from-pause-to-play"
+                            begin="indefinite"
+                        />
+                    </svg>
+                </div>
+                <div class="button">
+                    <svg 
+                        id="next"
+                        version="1.1"
+                        viewBox="0 0 100 100">
+                        <path 
+                            d="M 25 15 V 85 L 50 60 V 85 L 85 50 L 50 15 V 40 Z"
+                            rx="10" ry="10"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <p id="chapter-progress" aria-live="polite">
+                Chapter progress: <span id="current-position">--</span> of <span id="file-length">--</span>
+            </p>
+            
         </footer>
     </body>
 </html>
