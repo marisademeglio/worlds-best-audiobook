@@ -1,6 +1,6 @@
-async function initIframe(url, parentId) {
+async function initIframe(url, parentSelector) {
     return new Promise((resolve, reject) => {
-        let content = document.querySelector(parentId);
+        let content = document.querySelector(parentSelector);
         content.innerHTML = '';
         let iframe = document.createElement('iframe');
         iframe.onload = () => {

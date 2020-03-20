@@ -16,8 +16,18 @@ body {
 main {
     grid-area: main;
 }
+aside {
+    grid-area: aside;
+    overflow: scroll;
+}
 body > nav {
     grid-area: nav;
+}
+body > nav details {
+    height: 100%;
+}
+body > nav details div {
+    height: 100%;
 }
 header {
     border-bottom: 2px solid gray;
@@ -53,7 +63,6 @@ div#player-page {
 
 div#player-page img {
     display: block;
-    /*! margin: auto; */
     justify-content: center;
 }
 iframe {
@@ -64,4 +73,25 @@ iframe {
 }
 #player-page iframe {
     width: 50vw;
+}
+#bookmarks li {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    body {
+        grid-template-areas: 
+        "header"
+        "nav"
+        "main"
+        "footer"
+        "aside";
+        grid-template-rows: 5vh min-content auto 20vh min-content;
+        grid-template-columns: 1fr;
+        grid-gap: 1rem;
+    }   
+
+    #player-page iframe {
+        width: 70%;
+    }
 }

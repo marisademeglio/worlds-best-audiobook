@@ -1,3 +1,8 @@
+:root {
+    --enabled-opacity: 80%;
+    --disabled-opacity: 30%;
+}
+
 footer {
     display: grid;
     grid-column-gap: 1rem;
@@ -25,32 +30,33 @@ footer div.slider {
     display: grid;
     grid-template-columns: 20% 50% 15% 10%;
     grid-column-gap: 0.5rem;
-    align-content: center;
+    align-items: center;
 }
 footer input {
     background: black;
 }
 footer input::-moz-range-track{
     background-color: lightgray;
-    opacity: 70%;
+    opacity: var(--enabled-opacity);
     height: 5px;
     border-radius: 5px;
 }
 footer input::-webkit-slider-runnable-track {
     background-color: lightgray;
-    opacity: 70%;
+    opacity: var(--enabled-opacity);
     height: 5px;
     border-radius: 5px;
 }
 footer input::-ms-track {
     background-color: lightgray;
-    opacity: 70%;
+    opacity: var(--enabled-opacity);
     height: 5px;
     border-radius: 5px;
 }
 footer input::-moz-range-thumb {
     height: 20px;
     cursor: pointer;
+    border: none;
 }
 footer input::-webkit-slider-thumb {
     height: 20px;
@@ -61,39 +67,49 @@ footer input::-ms-thumb {
     cursor: pointer;
 }
 div.slider.disabled label, div.slider.disabled span {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
 }
 div.slider.disabled input::-moz-range-track {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
 }
 div.slider.disabled input::-webkit-slider-runnable-track {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
 }
 div.slider.disabled input::-ms-track {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
 }
 div.slider.disabled input::-moz-range-thumb {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
     cursor: default;
 }
 div.slider.disabled input::-webkit-slider-thumb {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
     cursor: default;
 }
 div.slider.disabled input::-ms-thumb {
-    opacity: 40%;
+    opacity: var(--disabled-opacity);
     cursor: default;
 }
 
-#transport div.button {
+button {
     width: 4rem;
     height: 4rem;
     cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+}
+#adjust button {
+    text-align: left;
+    height: min-content;
+    width: 2rem;
+    height: 2rem;
+}
+#adjust button svg {
+    padding: 4px;
 }
 path {
-    stroke-width: 5;
     stroke: white;
-    fill: white;
     stroke-linejoin: round;
     stroke-linecap: round;
 }
@@ -101,18 +117,51 @@ svg {
     opacity: 90%;
     pointer-events: all;
 }
-svg path:hover {
+#transport svg:hover {
     fill: lightyellow;
     stroke: lightyellow;
     opacity: 80% !important;
 }
-svg#play-pause path {
-    stroke-width: 15;
-}
-svg#prev {
-    rotate: 180deg;
+#bookmark svg:hover line {
+    stroke: black;
 }
 #mute, #reset-rate {
     width: min-content;
     padding: 0;
+}
+line.mute-x:not(.muted) {
+    display: none;
+}
+svg.disabled {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    footer {
+        display: grid;
+        grid-column-gap: 1rem;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+        "transport"
+        "status"
+        "adjust";
+    }
+    #transport button {
+        width: 3rem;
+        height: 3rem;
+    }
+    #adjust {
+        justify-self: center;
+    }
+    #adjust label {
+        visibility: hidden;
+    }
+    #chapter-progress {
+        justify-self: center;
+    }
+    #chapter-progress .label {
+        display: none;
+    }
+       
 }

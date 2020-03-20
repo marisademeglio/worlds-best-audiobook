@@ -49,7 +49,19 @@ async function getPosition(id) {
 async function getPositions(pubid) {
     return await db.getAllFromIndex('positions', 'pubid', pubid);
 }
-
+// just copy from the most recent last read position
+// which is constantly updated
+async function addBookmarkAtCurrentPosition(pubid) {
+    let lastRead = await getLastRead(pubid);
+    let bmk = {
+        pubid: lastRead.pubid,
+        readingOrderItem: lastRead.readingOrderItem,
+        offset: lastRead.offset,
+        label: lastRead.label,
+        type: "bookmark"
+    };
+    await addBookmark(bmk);
+}
 async function addBookmark(data) {
     await db.add('positions', {...data, type: 'bookmark'});
 }
@@ -92,7 +104,7 @@ async function updateLastRead(data) {
 
 export { 
     initdb, deletedb, deleteAll, 
-    addBookmark, getBookmarks, 
+    addBookmark, addBookmarkAtCurrentPosition, getBookmarks, 
     getPosition, removePosition, getPositions,
     getLastRead, updateLastRead };
 
@@ -102,6 +114,7 @@ Required for submitting
 {
     pubid: "PublicationID",
     readingOrderItem: "relativeURL/item.mp3",
+    label: label text,
     offset: 400ms
 }
 

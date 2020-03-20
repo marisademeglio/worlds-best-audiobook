@@ -1,8 +1,9 @@
 import * as Events from './events.js';
 import * as Audio from './audio.js';
 import * as Narrator from './narrator.js';
+import * as LocalData from '../common/localdata.js';
+import * as Utils from '../common/utils.js';
 
-const secondsToHms = seconds => moment.utc(seconds * 1000).format('HH:mm:ss');
 let isPlaying = false;
 function init() {
     document.querySelector("#file-length").textContent = '--';
@@ -17,6 +18,8 @@ function init() {
         e => setPlaybackRate(100));
     document.querySelector("#mute").addEventListener("click", e => toggleMute());
     
+    document.querySelector("#bookmark").addEventListener("click", e => addBookmark());
+
     document.querySelector("#rate").value = 100;
     setPlaybackRate(100);
     document.querySelector("#volume").value = 80;
@@ -51,17 +54,19 @@ function toggleMute() {
     if (Audio.isMuted()) {
         document.querySelector("#volume-wrapper").classList.remove("disabled");
         document.querySelector("#volume").disabled = false;
-        document.querySelector("#mute").textContent = "🔇";
         document.querySelector("#mute").setAttribute("title", "Mute");
         document.querySelector("#mute").setAttribute("aria-label", "Mute");
+        // make the x disappear on the icon
+        Array.from(document.querySelectorAll(".mute-x")).map(node => node.classList.remove("muted"));
         Audio.unmute();
     }
     else {
         document.querySelector("#volume-wrapper").classList.add("disabled");
         document.querySelector("#volume").disabled = true;
-        document.querySelector("#mute").textContent = "🔈";
         document.querySelector("#mute").setAttribute("title", "Unmute");
         document.querySelector("#mute").setAttribute("aria-label", "Unmute");
+        // make the x appear on the icon
+        Array.from(document.querySelectorAll(".mute-x")).map(node => node.classList.add("muted"));
         Audio.mute();
     }
 }
@@ -79,27 +84,33 @@ function setPlaybackVolume(val) {
 }
 
 function onPositionChange(position, fileDuration) {
-    document.querySelector("#current-position").textContent = secondsToHms(position);
+    document.querySelector("#current-position").textContent = Utils.secondsToHms(position);
     if (document.querySelector("#file-length").textContent == '--') {
-        document.querySelector("#file-length").textContent = secondsToHms(fileDuration);
+        document.querySelector("#file-length").textContent = Utils.secondsToHms(fileDuration);
     }
 }
 
 function onPlay() {
-    document.querySelector("#play-pause").setAttribute("alt", "Pause");
-    document.querySelector("#from-pause-to-play").beginElement();
+    document.querySelector("#pause").classList.remove("disabled");
+    document.querySelector("#play").classList.add("disabled");
+    document.querySelector("#play-pause").setAttribute("aria-label", "Pause");
+    document.querySelector("#play-pause").setAttribute("title", "Pause");
     isPlaying = true;
 }
 
 function onPause() {
-    document.querySelector("#play-pause").setAttribute("alt", "Play");
-    document.querySelector("#from-play-to-pause").beginElement();
+    document.querySelector("#pause").classList.add("disabled");
+    document.querySelector("#play").classList.remove("disabled");
+    document.querySelector("#play-pause").setAttribute("aria-label", "Play");
+    document.querySelector("#play-pause").setAttribute("title", "Play");
     isPlaying = false;
 }
 
 function showSyncNarrationControls() {
-    document.querySelector("#next").setAttribute("alt", "Next phrase");
-    document.querySelector("#prev").setAttribute("alt", "Previous phrase");
+    document.querySelector("#next").setAttribute("aria-label", "Next phrase");
+    document.querySelector("#prev").setAttribute("aria-label", "Previous phrase");
+    document.querySelector("#next").setAttribute("title", "Next phrase");
+    document.querySelector("#prev").setAttribute("title", "Previous phrase");
 
     document.querySelector("#next").removeEventListener("click", nextPhrase);
     document.querySelector("#next").removeEventListener("click", skipAhead);
@@ -111,8 +122,11 @@ function showSyncNarrationControls() {
 }
 
 function showAudioControls() {
-    document.querySelector("#next").setAttribute("alt", "Skip ahead 10 seconds");
-    document.querySelector("#prev").setAttribute("alt", "Skip back 10 seconds");
+    document.querySelector("#next").setAttribute("aria-label", "Skip ahead 10 seconds");
+    document.querySelector("#prev").setAttribute("aria-label", "Skip back 10 seconds");
+
+    document.querySelector("#next").setAttribute("title", "Skip ahead 10 seconds");
+    document.querySelector("#prev").setAttribute("title", "Skip back 10 seconds");
 
     document.querySelector("#next").removeEventListener("click", nextPhrase);
     document.querySelector("#next").removeEventListener("click", skipAhead);
@@ -124,6 +138,17 @@ function showAudioControls() {
     document.querySelector("#prev").addEventListener("click", 
         e => skipBack());
 
+}
+function addBookmark() {
+    // request the publication ID from the main player
+    Events.off("Response.Pubid", _addBookmark);
+    Events.on("Response.Pubid", _addBookmark);
+    Events.trigger("Request.Pubid");
+}
+async function _addBookmark(id) {
+    console.log("Got pub id, adding bmk");
+    await LocalData.addBookmarkAtCurrentPosition(id);
+    Events.trigger("Bookmarks.Refresh");
 }
 
 export {

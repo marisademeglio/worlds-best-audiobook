@@ -5,16 +5,21 @@ import * as Controls from './controls.js';
 import * as LocalData from '../common/localdata.js';
 import * as Events from './events.js';
 import * as Chapter from './chapter.js';
-
+import * as Utils from '../common/utils.js';
 
 var manifest;
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOM loaded");
     LocalData.initdb();
     Events.on("Chapter.Done", chapterPlaybackDone);
     Events.on('Nav.LoadContent', loadContent);
     Events.on("Audio.PositionChange", onAudioPositionChange);
+    Events.on("Request.Pubid", onRequestPubId);
+    Events.on("Bookmarks.Refresh", onBookmarksRefresh);
+    Events.on("Bookmarks.LoadBookmark", loadBookmark);
+
     let urlSearchParams = new URLSearchParams(document.location.search);
     if (urlSearchParams.has("q")) {
         open(urlSearchParams.get("q"));
@@ -41,12 +46,16 @@ async function open(url) {
 
     let lastReadPosition = await LocalData.getLastRead(manifest.data.id);
     console.log("Player: last read position is ", lastReadPosition);
+    
+    await loadBookmarks();
+
     let readingOrderItem = lastReadPosition ? 
         manifest.updateCurrentReadingOrderIndex(lastReadPosition.readingOrderItem) 
         : 
         manifest.getCurrentReadingOrderItem();
     if (readingOrderItem) {
-        loadContent(readingOrderItem.url, lastReadPosition.offset ? lastReadPosition.offset : 0);
+        loadContent(readingOrderItem.url, lastReadPosition ? 
+            lastReadPosition.offset ? lastReadPosition.offset : 0 : 0);
     }
     else {
         console.log("Player: reading order error");
@@ -64,7 +73,7 @@ function loadPubInfo(manifest) {
 async function loadContent(url, offset=0) {
     console.log(`Player: loading content ${url}`);
     let readingOrderItem = manifest.updateCurrentReadingOrderIndex(url);
-    saveChapterPosition(manifest.getCurrentReadingOrderItem().originalUrl);
+    saveChapterPosition(manifest.getCurrentReadingOrderItem());
     
     if (readingOrderItem) {
         Chapter.play(manifest, offset);
@@ -87,11 +96,12 @@ async function chapterPlaybackDone(src) {
 }
 
 // note our current position
-function saveChapterPosition(url) {
+function saveChapterPosition(readingOrderItem) {
     console.log("Player: saving last-read position"); 
     let pos = {
         pubid: manifest.data.id,
-        readingOrderItem: url
+        readingOrderItem: readingOrderItem.originalUrl,
+        label: manifest.getL10NStringValue(readingOrderItem.name)
     };
     LocalData.updateLastRead(pos);
 }
@@ -103,4 +113,45 @@ function onAudioPositionChange(position) {
         offset: position
     };
     LocalData.updateLastRead(pos);
+}
+
+function onRequestPubId() {
+    console.log("Got pubid request");
+    Events.trigger("Response.Pubid", manifest.data.id);
+}
+
+async function onBookmarksRefresh() {
+    await loadBookmarks();
+}
+
+async function loadBookmarks() {
+    let bookmarks = await LocalData.getBookmarks(manifest.data.id);
+    let bookmarksList = document.querySelector("#bookmarks nav ul");
+    bookmarksList.innerHTML = bookmarks.map(bmk => 
+        `<li>
+            <a href="${bmk.readingOrderItem}#t=${bmk.offset}">
+                ${bmk.label} @ ${Utils.secondsToHms(bmk.offset)}
+            </a>
+        </li>`
+    ).join('');
+
+    let bookmarkElms = Array.from(document.querySelectorAll("#bookmarks nav ul li a"));
+    bookmarkElms.map(bookmarkElm => {
+        bookmarkElm.addEventListener("click", (e) => {
+            e.preventDefault();
+            Events.trigger('Bookmarks.LoadBookmark', 
+                bookmarkElm.getAttribute('href'));
+        });
+    });
+
+}
+
+function loadBookmark(href) {
+    if (href.indexOf("#t=") != -1) {
+        let hrefParts = href.split('#t=');
+        loadContent(hrefParts[0], hrefParts[1]);
+    }
+    else {
+        loadContent(href);
+    }
 }

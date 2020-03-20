@@ -17,7 +17,7 @@
             
             <nav aria-label="player navigation">
                 <ul>
-                    <li><a href="../library">Back to Library</a></li>
+                    <li><a href="../library">Library</a></li>
                     <li><a href="settings.html" id="settingsLink">Settings</a></li>
                 </ul>
             </nav>
@@ -32,79 +32,66 @@
             
         </main>
         <nav id="player-toc" aria-live="polite" aria-label="book navigation">
+            <details open>
+                <summary>Table of Contents</summary>
+                <div></div>
+            </details>
         </nav>
+        <aside id="bookmarks">
+            <details open>
+                <summary>Bookmarks</summary>
+                <nav aria-label="Bookmarks">
+                    <ul>
+
+                    </ul>
+                </nav>
+            </details>
+        </aside>
         <footer id="controls" aria-live="polite" aria-label="playback controls">
             <div id="adjust">
                 <div id="volume-wrapper" class="slider">
                     <label for="volume">Volume</label>
                     <input id="volume" type="range" min="0" max="100">
                     <span id="volume-value"></span>
-                    <button aria-label="Mute" id="mute" title="Mute">🔇</button>
+                    <button aria-label="Mute" id="mute" title="Mute">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-volume"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <line class="mute-x" x1="23" y1="9" x2="17" y2="15"></line>
+                            <line class="mute-x" x1="17" y1="9" x2="23" y2="15"></line>
+                        </svg>
+                    </button>
                 </div>
 
                 <div id="rate-wrapper" class="slider">
                     <label for="rate">Rate</label>
                     <input id="rate" type="range" min="50" max="200">
                     <span id="rate-value"></span>
-                    <button id="reset-rate" aria-label="Reset rate" title="Reset rate">1x</button>
+                    <button id="reset-rate">
+                        Reset
+                    </button>
                 </div>
             </div>
-            
             
             <div id="transport">
-                <div class="button">
-                    <svg 
-                        id="prev"
-                        version="1.1"
-                        viewBox="0 0 100 100">
-                        <path 
-                            d="M 25 15 V 85 L 50 60 V 85 L 85 50 L 50 15 V 40 Z"
-                            rx="10" ry="10"/>
+                <button id="prev">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rewind"><polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon></svg>
+                </button>
+                <button id="play-pause">
+                    <svg id="pause" aria-label="Pause" class="disabled" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pause"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    <svg id="play" aria-label="Play" class="disabled" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-play"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                </button>
+                <button id="next">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-fast-forward"><polygon points="13 19 22 12 13 5 13 19"></polygon><polygon points="2 19 11 12 2 5 2 19"></polygon></svg>
+                </button>
+                <button id="bookmark" aria-label="Add bookmark" title="Add bookmark">
+                    <svg alt="Add bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bookmark">    
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        <line x1="12" y1="6" x2="12" y2="12"></line>
+                        <line x1="9" y1="9" x2="15" y2="9"></line>
                     </svg>
-                </div>
-                <div class="button">
-                    <svg
-                        id="play-pause" 
-                        version="1.1" 
-                        viewBox="0 0 100 100">        
-                        <path d="M 30 15 V 85" rx="10" ry="10" />
-                        <path id='line2' d="M 70 15 V 85" rx="10" ry="10" >
-                            <animate
-                                attributeName="d"
-                                dur="300ms"
-                                from="M 70 15 V 85"
-                                to="M 30 15 L 70 50 L 30 85"
-                                begin="indefinite"
-                                fill="freeze"
-                                id="from-play-to-pause"
-                            />
-                        </path>
-                        <animate
-                            xlink:href="#line2"
-                            attributeName="d"
-                            dur="300ms"
-                            from="M 30 15 L 70 50 L 30 85"
-                            to="M 70 15 V 85"
-                            fill="freeze"
-                            id="from-pause-to-play"
-                            begin="indefinite"
-                        />
-                    </svg>
-                </div>
-                <div class="button">
-                    <svg 
-                        id="next"
-                        version="1.1"
-                        viewBox="0 0 100 100">
-                        <path 
-                            d="M 25 15 V 85 L 50 60 V 85 L 85 50 L 50 15 V 40 Z"
-                            rx="10" ry="10"/>
-                    </svg>
-                </div>
+                </button>
             </div>
-            
             <p id="chapter-progress" aria-live="polite">
-                Chapter progress: <span id="current-position">--</span> of <span id="file-length">--</span>
+                <span class="label">Chapter progress:</span> <span id="current-position">--</span> of <span id="file-length">--</span>
             </p>
             
         </footer>

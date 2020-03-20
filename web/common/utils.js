@@ -33,4 +33,6 @@ function isInViewport(elm, doc) {
         bounding.right <= (doc.defaultView.innerWidth || doc.documentElement.clientWidth)
     );
 }
-export { fetchFile, isImage, isAudio, isText, isInViewport };
+const secondsToHms = seconds => moment.utc(seconds * 1000).format('HH:mm:ss');
+
+export { fetchFile, isImage, isAudio, isText, isInViewport, secondsToHms };

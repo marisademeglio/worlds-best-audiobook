@@ -30,3 +30,9 @@ li a:last-child {
 li:hover {
    box-shadow: 0 0 10px gray;
 }
+
+@media (max-width: 768px) {
+    ul {
+        flex-direction: column;
+    }
+}
