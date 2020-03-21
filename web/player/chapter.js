@@ -29,7 +29,7 @@ async function play(manifest, offset=0) {
         else {
             log.info("Player: content is audio");
             loadCover(manifest);
-            loadAudio(readingOrderItem.url);
+            loadAudio(readingOrderItem.url, offset);
         }
     }
 }
