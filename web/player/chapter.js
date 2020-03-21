@@ -17,17 +17,17 @@ async function play(manifest, offset=0) {
     if (Utils.isAudio(readingOrderItem.encodingFormat)) {
         if (readingOrderItem.hasOwnProperty('alternate')) {
             if (readingOrderItem.alternate[0].encodingFormat == "text/html") {
-                console.log("Player: alternate is HTML");
+                log.info("Player: alternate is HTML");
                 await loadHtml(readingOrderItem.alternate[0].url);
                 loadAudio(readingOrderItem.url, offset);
             }
             else if (readingOrderItem.alternate[0].encodingFormat == "application/vnd.syncnarr+json") {
-                console.log("Player: alternate is sync narration");
+                log.info("Player: alternate is sync narration");
                 await loadSyncNarration(readingOrderItem.alternate[0].url, offset);
             }
         }
         else {
-            console.log("Player: content is audio");
+            log.info("Player: content is audio");
             loadCover(manifest);
             loadAudio(readingOrderItem.url);
         }

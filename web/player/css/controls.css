@@ -20,6 +20,7 @@ footer {
     justify-self: center;
     display: flex;
     align-self: center;
+    align-items: center;
 }
 #chapter-progress {
     grid-area: status;
@@ -132,10 +133,10 @@ svg {
 line.mute-x:not(.muted) {
     display: none;
 }
-svg.disabled {
-    display: none;
+#play-pause {
+    width: 5rem;
+    height: 5rem;
 }
-
 @media (max-width: 768px) {
     footer {
         display: grid;

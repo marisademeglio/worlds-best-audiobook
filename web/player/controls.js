@@ -5,6 +5,9 @@ import * as LocalData from '../common/localdata.js';
 import * as Utils from '../common/utils.js';
 
 let isPlaying = false;
+let isCaption = false;
+let isSyncNarr = false;
+
 function init() {
     document.querySelector("#file-length").textContent = '--';
     document.querySelector("#current-position").textContent = '--';
@@ -19,6 +22,9 @@ function init() {
     document.querySelector("#mute").addEventListener("click", e => toggleMute());
     
     document.querySelector("#bookmark").addEventListener("click", e => addBookmark());
+
+    document.querySelector("#next").addEventListener("click", e => next());
+    document.querySelector("#prev").addEventListener("click", e => prev());
 
     document.querySelector("#rate").value = 100;
     setPlaybackRate(100);
@@ -38,17 +44,21 @@ function init() {
         }
     });
 }
-function skipAhead() {
-    Audio.setPosition(Audio.getPosition() + 10);
+function next() {
+    if (isSyncNarr) {
+        Narrator.next();
+    }
+    else {
+        Audio.setPosition(Audio.getPosition() + 10);
+    }
 }
-function skipBack() {
-    Audio.setPosition(Audio.getPosition() - 10);
-}
-function nextPhrase() {
-    Narrator.next();
-}
-function prevPhrase() {
-    Narrator.prev();
+function prev() {
+    if (isSyncNarr) {
+        Narrator.prev();
+    }
+    else {
+        Audio.setPosition(Audio.getPosition() - 10);    
+    }
 }
 function toggleMute() {
     if (Audio.isMuted()) {
@@ -85,8 +95,13 @@ function setPlaybackVolume(val) {
 
 function onPositionChange(position, fileDuration) {
     document.querySelector("#current-position").textContent = Utils.secondsToHms(position);
-    if (document.querySelector("#file-length").textContent == '--') {
-        document.querySelector("#file-length").textContent = Utils.secondsToHms(fileDuration);
+    
+    if (!isNaN(fileDuration)) {
+        let duration = Utils.secondsToHms(fileDuration);
+    
+        if (document.querySelector("#file-length").textContent != duration) {
+            document.querySelector("#file-length").textContent = duration;
+        }
     }
 }
 
@@ -107,36 +122,46 @@ function onPause() {
 }
 
 function showSyncNarrationControls() {
+    log.debug("Controls: show sync narration controls");
+    isSyncNarr = true;
     document.querySelector("#next").setAttribute("aria-label", "Next phrase");
     document.querySelector("#prev").setAttribute("aria-label", "Previous phrase");
     document.querySelector("#next").setAttribute("title", "Next phrase");
     document.querySelector("#prev").setAttribute("title", "Previous phrase");
 
-    document.querySelector("#next").removeEventListener("click", nextPhrase);
-    document.querySelector("#next").removeEventListener("click", skipAhead);
-    document.querySelector("#prev").removeEventListener("click", prevPhrase);
-    document.querySelector("#prev").removeEventListener("click", skipBack);
-    
-    document.querySelector("#next").addEventListener("click", e => nextPhrase());
-    document.querySelector("#prev").addEventListener("click", e=> prevPhrase());
+    document.querySelector("#caption-page").classList.remove("disabled");
+    document.querySelector("#caption").classList.remove("disabled");
+    document.querySelector("#page").classList.add("disabled");
+
+    document.querySelector("#caption-page").addEventListener("click", e => {
+        if (isCaption) {
+            captionsOff();
+            Events.trigger("Captions.Off");
+        }
+        else {
+            captionsOn();
+            Events.trigger("Captions.On");
+        }
+    });
 }
 
 function showAudioControls() {
+    log.debug("Controls: show audio controls");
+    isSyncNarr = false;
+
     document.querySelector("#next").setAttribute("aria-label", "Skip ahead 10 seconds");
     document.querySelector("#prev").setAttribute("aria-label", "Skip back 10 seconds");
 
     document.querySelector("#next").setAttribute("title", "Skip ahead 10 seconds");
     document.querySelector("#prev").setAttribute("title", "Skip back 10 seconds");
 
-    document.querySelector("#next").removeEventListener("click", nextPhrase);
-    document.querySelector("#next").removeEventListener("click", skipAhead);
-    document.querySelector("#prev").removeEventListener("click", prevPhrase);
-    document.querySelector("#prev").removeEventListener("click", skipBack);
     
-    document.querySelector("#next").addEventListener("click", 
-        e => skipAhead());
-    document.querySelector("#prev").addEventListener("click", 
-        e => skipBack());
+    document.querySelector("#caption-page").classList.add("disabled");
+
+    // turn off the captions if they were on
+    if (isCaption) {
+        Events.trigger("Captions.Off");
+    }
 
 }
 function addBookmark() {
@@ -146,11 +171,25 @@ function addBookmark() {
     Events.trigger("Request.Pubid");
 }
 async function _addBookmark(id) {
-    console.log("Got pub id, adding bmk");
     await LocalData.addBookmarkAtCurrentPosition(id);
     Events.trigger("Bookmarks.Refresh");
 }
 
+function captionsOff() {
+    isCaption = false;
+    document.querySelector("#caption").classList.remove("disabled");
+    document.querySelector("#page").classList.add("disabled");
+    document.querySelector("#caption-page").setAttribute("title", "Show captions");
+    document.querySelector("#caption-page").setAttribute("aria-label", "Show captions");
+}
+
+function captionsOn() {
+    isCaption = true;
+    document.querySelector("#caption").classList.add("disabled");
+    document.querySelector("#page").classList.remove("disabled");
+    document.querySelector("#caption-page").setAttribute("title", "Show page");
+    document.querySelector("#caption-page").setAttribute("aria-label", "Show page");
+}
 export {
     init,
     showSyncNarrationControls,

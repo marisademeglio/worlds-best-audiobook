@@ -8,13 +8,14 @@ body {
     "header header header"
     "nav main aside"
     "footer footer footer";
-    grid-template-rows: 10vh auto 10vh;
+    grid-template-rows: 5vh auto 8vh;
     grid-template-columns: 20% auto 20%;
     grid-gap: 1rem;
     overflow: hidden;
 }
 main {
     grid-area: main;
+    overflow: scroll;
 }
 aside {
     grid-area: aside;
@@ -77,7 +78,11 @@ iframe {
 #bookmarks li {
     margin-bottom: 1rem;
 }
-
+#player-captions {
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 2rem;
+}
 @media (max-width: 768px) {
     body {
         grid-template-areas: 

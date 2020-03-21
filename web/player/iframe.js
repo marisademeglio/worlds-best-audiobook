@@ -4,10 +4,10 @@ async function initIframe(url, parentSelector) {
         content.innerHTML = '';
         let iframe = document.createElement('iframe');
         iframe.onload = () => {
-            console.log(`iframe loaded ${url}`);
+            log.debug(`iframe loaded ${url}`);
             if (iframe.contentDocument) {
                 if (iframe.contentDocument.styleSheets.length == 0) {
-                    console.log("iframe has no styles -- applying style")
+                    log.info("Document has no styles -- applying default style")
                     let iframeStyle = iframe.contentDocument.createElement('link');
                     iframeStyle.setAttribute('rel', 'stylesheet');
                     iframeStyle.setAttribute('href', new URL('css/pub-default.css', document.location.href));
@@ -16,12 +16,12 @@ async function initIframe(url, parentSelector) {
                     resolve(iframe.contentDocument);
                 }
                 else {
-                    console.log("Document has default style, not modifying it");
+                    log.info("Document has default style, not modifying it");
                     resolve(iframe.contentDocument);
                 }
             }
             else {
-                console.log("can't access iframe content doc");
+                log.warn("Can't access iframe content doc");
                 resolve(null);
             }
         };

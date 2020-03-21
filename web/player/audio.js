@@ -22,7 +22,7 @@ let audio = null;
 let waitForSeek = false;
 
 function loadFile(file) {
-    console.log("Audio Player: file = ", file);
+    log.debug("Audio Player: file = ", file);
     clip.file = file;
     let wasMuted = false;
     if (audio) {
@@ -54,7 +54,7 @@ function playClip(file, start = 0, end = -1, isLastClip = false) {
             audio.currentTime = clip.start;
         }
         else {
-            console.log("Audio Player: close enough, not resetting");
+            // log.debug("Audio Player: close enough, not resetting");
         }
     }
 }
@@ -85,7 +85,7 @@ async function onAudioProgress(event) {
         // this function will get called a few times
         // we don't want it to reset playback so check that current time is zero before proceeding
     if (audio.currentTime == 0 && !isPlaying()) {
-        console.log("Audio Player: starting playback");
+        log.debug("Audio Player: starting playback");
         audio.currentTime = clip.start;
         Events.trigger('Audio.Play');
         await audio.play();
@@ -111,15 +111,13 @@ async function onAudioTimeUpdate(event) {
         else if (audio.currentTime >= audio.duration && audio.ended) {
             Events.trigger('Audio.Pause');
             audio.pause();
-            console.log("Audio Player: element ended playback");
-            console.log("this file: ", clip.file);
+            log.debug("Audio Player: element ended playback");
             Events.trigger("Audio.ClipDone");
         }
     }
 }
 
 function setRate(val) {
-    console.log(`Audio Player: rate ${val}`);
     settings.rate = val;
     if (audio) {
         audio.playbackRate = val;
@@ -127,7 +125,6 @@ function setRate(val) {
 }
 
 function setPosition(val) {
-    console.log(`Audio Player: position ${val}`);
     if (audio) {
         if (val < 0){ 
             audio.currentTime = 0;
@@ -143,7 +140,6 @@ function setPosition(val) {
 
 function setVolume(val) {
     settings.volume = val;
-    console.log(`Audio Player: volume ${val}`);
     if (audio) {
         audio.volume = val;
     }

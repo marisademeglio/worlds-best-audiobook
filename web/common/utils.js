@@ -4,7 +4,6 @@ async function fetchFile(file) {
     return text;
 }
 
-
 function isImage(encodingFormat) {
     return [
         'image/jpeg',

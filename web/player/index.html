@@ -5,8 +5,8 @@
         <link rel="stylesheet" href="css/base.css"/>
         <link rel="stylesheet" href="css/player.css"/>
         <link rel="stylesheet" href="css/controls.css"/>
-        <!-- <link rel="stylesheet" href="css/drawers.css"/> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+        <script src="../common/moment.js"></script>
+        <script src="../common/loglevel.js"></script>
         <script src="index.js" type="module"></script>
     </head>
     <body>
@@ -24,12 +24,10 @@
         
         </header>
         <main>
-            <!-- <input type="checkbox" id="toc-toggle" name="toc-toggle"/>
-            <label for="toc-toggle">TOC</label>
-             -->
             <div id="player-page" aria-live="polite">
             </div>
-            
+            <p id="player-captions" aria-live="polite" class="disabled">
+            </p>
         </main>
         <nav id="player-toc" aria-live="polite" aria-label="book navigation">
             <details open>
@@ -72,6 +70,13 @@
             </div>
             
             <div id="transport">
+                <button id="bookmark" aria-label="Add bookmark" title="Add bookmark">
+                    <svg alt="Add bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bookmark">    
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                        <line x1="12" y1="6" x2="12" y2="12"></line>
+                        <line x1="9" y1="9" x2="15" y2="9"></line>
+                    </svg>
+                </button>
                 <button id="prev">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rewind"><polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon></svg>
                 </button>
@@ -82,13 +87,11 @@
                 <button id="next">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-fast-forward"><polygon points="13 19 22 12 13 5 13 19"></polygon><polygon points="2 19 11 12 2 5 2 19"></polygon></svg>
                 </button>
-                <button id="bookmark" aria-label="Add bookmark" title="Add bookmark">
-                    <svg alt="Add bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bookmark">    
-                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
-                        <line x1="12" y1="6" x2="12" y2="12"></line>
-                        <line x1="9" y1="9" x2="15" y2="9"></line>
-                    </svg>
+                <button id="caption-page">
+                    <svg id="caption" class="disabled" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <svg id="page" class="disabled" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 </button>
+                
             </div>
             <p id="chapter-progress" aria-live="polite">
                 <span class="label">Chapter progress:</span> <span id="current-position">--</span> of <span id="file-length">--</span>

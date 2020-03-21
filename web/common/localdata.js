@@ -24,7 +24,7 @@ async function initdb() {
 async function deletedb() {
     await deleteDB(dbname, {
         blocked() {
-            console.log("Delete DB blocked");
+            log.error("IndexedDB error: Delete DB blocked");
         },
     });
     db = null;

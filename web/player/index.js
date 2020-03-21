@@ -9,9 +9,10 @@ import * as Utils from '../common/utils.js';
 
 var manifest;
 
+let isCaption = false;
+log.setLevel("trace");
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM loaded");
     LocalData.initdb();
     Events.on("Chapter.Done", chapterPlaybackDone);
     Events.on('Nav.LoadContent', loadContent);
@@ -19,6 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
     Events.on("Request.Pubid", onRequestPubId);
     Events.on("Bookmarks.Refresh", onBookmarksRefresh);
     Events.on("Bookmarks.LoadBookmark", loadBookmark);
+    Events.on("Narrator.Highlight", onNarratorHighlight);
+    Events.on("Captions.On", onCaptionsOn);
+    Events.on("Captions.Off", onCaptionsOff);
+
+    if (window.matchMedia('(max-width: 768px)')) {
+        collapse();
+    }
 
     let urlSearchParams = new URLSearchParams(document.location.search);
     if (urlSearchParams.has("q")) {
@@ -34,7 +42,8 @@ async function open(url) {
     }];
     await manifest.loadUrl(url);
     if (manifest.getFatalErrors().length > 0) {
-        // TODO show error message
+        // TODO show detailed error message
+        log.error("Manifest error(s)");
         return;
     }
     else {
@@ -45,7 +54,7 @@ async function open(url) {
     await Nav.loadToc(manifest);
 
     let lastReadPosition = await LocalData.getLastRead(manifest.data.id);
-    console.log("Player: last read position is ", lastReadPosition);
+    log.debug("Player: last read position is ", lastReadPosition);
     
     await loadBookmarks();
 
@@ -58,7 +67,7 @@ async function open(url) {
             lastReadPosition.offset ? lastReadPosition.offset : 0 : 0);
     }
     else {
-        console.log("Player: reading order error");
+        log.error("Player: reading order error");
     }
 }
 
@@ -71,7 +80,7 @@ function loadPubInfo(manifest) {
 
 // load content doc into the content pane
 async function loadContent(url, offset=0) {
-    console.log(`Player: loading content ${url}`);
+    log.debug(`Player: loading content ${url} @ ${offset}`);
     let readingOrderItem = manifest.updateCurrentReadingOrderIndex(url);
     saveChapterPosition(manifest.getCurrentReadingOrderItem());
     
@@ -80,16 +89,20 @@ async function loadContent(url, offset=0) {
     }
 }
 
+function onNarratorHighlight(id, innerHTML) {
+    document.querySelector("#player-captions").innerHTML = innerHTML;
+}
+
 // event callback
 async function chapterPlaybackDone(src) {
-    console.log("Player: end of chapter");
+    log.debug("Player: end of chapter", src);
     if (src == manifest.getCurrentReadingOrderItem().url) {
         let readingOrderItem = manifest.gotoNextReadingOrderItem();
         if (readingOrderItem) {
             await loadContent(readingOrderItem.url);
         }
         else {
-            console.log("Player: end of book");
+            log.debug("Player: end of book");
         }
     }
     // else ignore it, sometimes the audio element generates multiple end events
@@ -97,7 +110,7 @@ async function chapterPlaybackDone(src) {
 
 // note our current position
 function saveChapterPosition(readingOrderItem) {
-    console.log("Player: saving last-read position"); 
+    log.debug("Player: saving last-read position"); 
     let pos = {
         pubid: manifest.data.id,
         readingOrderItem: readingOrderItem.originalUrl,
@@ -116,7 +129,6 @@ function onAudioPositionChange(position) {
 }
 
 function onRequestPubId() {
-    console.log("Got pubid request");
     Events.trigger("Response.Pubid", manifest.data.id);
 }
 
@@ -154,4 +166,41 @@ function loadBookmark(href) {
     else {
         loadContent(href);
     }
+}
+
+function collapse() {
+    // this should work but doesn't... 
+    // document.querySelector("#player-toc details").setAttribute("open", false);
+    // document.querySelector("#bookmarks details").setAttribute("open", false);
+    
+    collapseDetailsSummary(document.querySelector("#player-toc"));
+    collapseDetailsSummary(document.querySelector("#bookmarks"));
+}
+
+function collapseDetailsSummary(parent) {
+    // it's closed, so open it
+    if (parent.querySelector("details").getAttribute("open") == null) {
+        parent.querySelector("summary").click();
+        parent.querySelector("summary").setAttribute("aria-expanded", true);
+    }
+
+    // it's open, so close it
+    if (parent.querySelector("details").getAttribute("open") == "") {
+        parent.querySelector("summary").click();
+        parent.querySelector("summary").setAttribute("aria-expanded", false);
+    }
+}
+
+function onCaptionsOn() {
+    isCaption = true;
+    log.info("Caption mode ON");
+    document.querySelector("#player-captions").classList.remove("disabled");
+    document.querySelector("#player-page").classList.add("disabled");
+}
+
+function onCaptionsOff() {
+    isCaption = false;
+    log.info("Caption mode OFF");
+    document.querySelector("#player-captions").classList.add("disabled");
+    document.querySelector("#player-page").classList.remove("disabled");
 }

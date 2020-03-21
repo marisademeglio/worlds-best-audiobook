@@ -31,9 +31,10 @@ function loadJson(json, offset) {
     activeElementClass = json.properties.hasOwnProperty("sync-media-active-element") ? 
       json.properties["sync-media-active-element"] : activeElementClass;
     items = flatten(json.narration);
+    Events.off("Audio.ClipDone", onAudioClipDone);
     Events.on("Audio.ClipDone", onAudioClipDone);
 
-    console.log("Starting");
+    log.debug("Starting sync narration");
     position = offset != 0 ? findOffsetPosition(offset) : 0;
     if (position != 0) {
         seekToOffsetOneTime = true;
@@ -51,7 +52,7 @@ function next() {
     
     if (position+1 < items.length) {
         position++;
-        console.log("Loading clip " + position);
+        log.debug("Loading clip " + position);
         render(
             items[position],
             position+1 >= items.length
@@ -59,7 +60,7 @@ function next() {
     }
     else {
         htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
-        console.log("Document done");
+        log.debug("Document done");
         Events.trigger('Narrator.Done');
     }
 }
@@ -71,7 +72,7 @@ function prev() {
     
     if (position-1 >= 0) {
         position--;
-        console.log("Loading clip " + position);
+        log.debug("Loading clip " + position);
         render(
             items[position],
             false
@@ -79,7 +80,7 @@ function prev() {
     }
     else {
         htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
-        console.log("Start of document");
+        log.debug("Start of document");
     }
 }
 
@@ -107,18 +108,18 @@ function render(item, isLast) {
 }
 
 function onAudioClipDone() {
-    console.log("Clip done");
     resetTextStyle(textid);
     next();
 }
 
 function highlightText(id) {
     let elm = htmlDocument.getElementById(id);
+    let text = elm.innerHTML;
     elm.classList.add(activeElementClass);
     if (!isInViewport(elm, htmlDocument)) {
         elm.scrollIntoView();
     }
-    Events.trigger("Narrator.Highlight", id);
+    Events.trigger("Narrator.Highlight", id, text);
 }
 
 function resetTextStyle(id) {
