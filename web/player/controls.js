@@ -49,7 +49,7 @@ function next() {
         Narrator.next();
     }
     else {
-        Audio.setPosition(Audio.getPosition() + 10);
+        Audio.setPosition(Audio.getPosition() + 30);
     }
 }
 function prev() {
@@ -57,7 +57,7 @@ function prev() {
         Narrator.prev();
     }
     else {
-        Audio.setPosition(Audio.getPosition() - 10);    
+        Audio.setPosition(Audio.getPosition() - 30);    
     }
 }
 function toggleMute() {
@@ -149,11 +149,11 @@ function showAudioControls() {
     log.debug("Controls: show audio controls");
     isSyncNarr = false;
 
-    document.querySelector("#next").setAttribute("aria-label", "Skip ahead 10 seconds");
-    document.querySelector("#prev").setAttribute("aria-label", "Skip back 10 seconds");
+    document.querySelector("#next").setAttribute("aria-label", "Skip ahead 30 seconds");
+    document.querySelector("#prev").setAttribute("aria-label", "Skip back 30 seconds");
 
-    document.querySelector("#next").setAttribute("title", "Skip ahead 10 seconds");
-    document.querySelector("#prev").setAttribute("title", "Skip back 10 seconds");
+    document.querySelector("#next").setAttribute("title", "Skip ahead 30 seconds");
+    document.querySelector("#prev").setAttribute("title", "Skip back 30 seconds");
 
     
     document.querySelector("#caption-page").classList.add("disabled");

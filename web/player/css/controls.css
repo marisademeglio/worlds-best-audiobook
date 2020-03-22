@@ -92,14 +92,11 @@ div.slider.disabled input::-ms-thumb {
     cursor: default;
 }
 
-button {
+footer button {
     width: 4rem;
     height: 4rem;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    color: white;
 }
+
 #adjust button {
     text-align: left;
     height: min-content;

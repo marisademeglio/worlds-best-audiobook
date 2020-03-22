@@ -82,12 +82,22 @@ iframe {
 #bookmarks li button {
     margin-left: auto; 
 }
+#bookmarks button {
+    border: thin white solid;
+    border-radius: 4px;
+    padding: 0.25rem;
+}
 #player-captions {
     font-size: 3rem;
     text-align: center;
     margin-top: 2rem;
 }
-
+#edit-bookmarks {
+    margin: auto;
+}
+#bookmarks nav {
+    display: grid;
+}
 @media (max-width: 768px) {
     body {
         grid-template-areas: 

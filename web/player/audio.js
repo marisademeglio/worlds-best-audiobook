@@ -106,13 +106,13 @@ async function onAudioTimeUpdate(event) {
                 Events.trigger('Audio.Pause');
                 audio.pause();
             }
-            Events.trigger("Audio.ClipDone");
+            Events.trigger("Audio.ClipDone", clip.file);
         }
         else if (audio.currentTime >= audio.duration && audio.ended) {
             Events.trigger('Audio.Pause');
             audio.pause();
             log.debug("Audio Player: element ended playback");
-            Events.trigger("Audio.ClipDone");
+            Events.trigger("Audio.ClipDone", clip.file);
         }
     }
 }

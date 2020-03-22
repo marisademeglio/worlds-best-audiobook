@@ -11,7 +11,7 @@ async function play(manifest, offset=0) {
     let readingOrderItem = manifest.getCurrentReadingOrderItem();
     Nav.setCurrentTocItem(readingOrderItem.url);
     
-    Events.off('Audio.clipDone', onAudioClipDone);
+    Events.off('Audio.ClipDone', onAudioClipDone);
     Events.off('Narrator.Done', onNarratorDone);
     
     if (Utils.isAudio(readingOrderItem.encodingFormat)) {
@@ -54,7 +54,7 @@ async function loadHtml(url) {
 
 function loadAudio(url, offset=0) {
     Controls.showAudioControls();
-    Events.on('Audio.clipDone', onAudioClipDone);
+    Events.on('Audio.ClipDone', onAudioClipDone);
     Audio.playClip(url, offset, -1, true);
 }
 
@@ -71,11 +71,11 @@ async function loadSyncNarration(url, offset=0) {
 }
 
 function onAudioClipDone(src) {
-    Events.trigger('Chapter.Done');
+    Events.trigger('Chapter.Done', src);
 }
 
-function onNarratorDone() {
-    Events.trigger('Chapter.Done');
+function onNarratorDone(src) {
+    Events.trigger('Chapter.Done', src);
 }
 
 export {

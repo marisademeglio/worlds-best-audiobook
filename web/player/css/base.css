@@ -15,3 +15,9 @@ a:hover {
 .disabled {
     display: none;
 }
+button {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    color: white;
+}

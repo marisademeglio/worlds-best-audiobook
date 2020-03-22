@@ -61,7 +61,7 @@ function next() {
     else {
         htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
         log.debug("Document done");
-        Events.trigger('Narrator.Done');
+        Events.trigger('Narrator.Done', '');
     }
 }
 

@@ -97,7 +97,9 @@ function onNarratorHighlight(id, innerHTML) {
 // event callback
 async function chapterPlaybackDone(src) {
     log.debug("Player: end of chapter", src);
-    if (src == manifest.getCurrentReadingOrderItem().url) {
+    // narrator sends empty strings for src values
+    // we really just need to check it against the manifest for audio-only chapters
+    if (src == '' || src == manifest.getCurrentReadingOrderItem().url) {
         let readingOrderItem = manifest.gotoNextReadingOrderItem();
         if (readingOrderItem) {
             await loadContent(readingOrderItem.url);
@@ -152,7 +154,7 @@ async function loadBookmarks() {
             </li>`
         ).join('');
         bookmarksNav.innerHTML = "<ul>" + bookmarksListItems + "</ul>" + 
-            `<button id="edit-bookmarks">${isEditBookmarks ? "Done" : "Edit bookmarks"}</button>`;
+            `<button id="edit-bookmarks">${isEditBookmarks ? "Done" : "Edit"}</button>`;
         
         let bookmarkElms = Array.from(document.querySelectorAll("#bookmarks nav ul li a"));
         bookmarkElms.map(bookmarkElm => {
@@ -175,7 +177,7 @@ async function loadBookmarks() {
                 isEditBookmarks = false;
                 let buttons = Array.from(document.querySelectorAll("#bookmarks nav li button"));
                 buttons.map(button => button.classList.add("disabled"));
-                document.querySelector("#edit-bookmarks").textContent = "Edit bookmarks";
+                document.querySelector("#edit-bookmarks").textContent = "Edit";
             }
             else {
                 isEditBookmarks = true;
@@ -239,6 +241,3 @@ function onCaptionsOff() {
     document.querySelector("#player-page").classList.remove("disabled");
 }
 
-function showEditBookmarks() {
-
-}
