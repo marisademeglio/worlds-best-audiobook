@@ -41,7 +41,8 @@ async function deleteAll() {
 }
 
 async function removePosition(id) {
-    await db.delete('positions', id, 'id');
+    //await db.delete('positions', id, 'id');
+    await db.delete('positions', id);
 }
 async function getPosition(id) {
     await db.get('positions', id, 'id');
@@ -73,6 +74,10 @@ async function getBookmarks(pubid) {
     else {
         return [];
     }
+}
+// nicer name
+async function deleteBookmark(id) {
+    await removePosition(parseInt(id));
 }
 
 async function getLastRead(pubid) {
@@ -106,7 +111,7 @@ export {
     initdb, deletedb, deleteAll, 
     addBookmark, addBookmarkAtCurrentPosition, getBookmarks, 
     getPosition, removePosition, getPositions,
-    getLastRead, updateLastRead };
+    getLastRead, updateLastRead, deleteBookmark };
 
 /* position data:
 

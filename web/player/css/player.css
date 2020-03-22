@@ -76,13 +76,18 @@ iframe {
     width: 50vw;
 }
 #bookmarks li {
+    display: flex;
     margin-bottom: 1rem;
+}
+#bookmarks li button {
+    margin-left: auto; 
 }
 #player-captions {
     font-size: 3rem;
     text-align: center;
     margin-top: 2rem;
 }
+
 @media (max-width: 768px) {
     body {
         grid-template-areas: 

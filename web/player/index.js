@@ -8,7 +8,7 @@ import * as Chapter from './chapter.js';
 import * as Utils from '../common/utils.js';
 
 var manifest;
-
+let isEditBookmarks = false;
 let isCaption = false;
 log.setLevel("trace");
 
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     Events.on("Captions.On", onCaptionsOn);
     Events.on("Captions.Off", onCaptionsOff);
 
+    
     if (window.matchMedia('(max-width: 768px)')) {
         collapse();
     }
@@ -136,26 +137,59 @@ async function onBookmarksRefresh() {
     await loadBookmarks();
 }
 
+// refresh the bookmarks list
 async function loadBookmarks() {
     let bookmarks = await LocalData.getBookmarks(manifest.data.id);
-    let bookmarksList = document.querySelector("#bookmarks nav ul");
-    bookmarksList.innerHTML = bookmarks.map(bmk => 
-        `<li>
-            <a href="${bmk.readingOrderItem}#t=${bmk.offset}">
-                ${bmk.label} @ ${Utils.secondsToHms(bmk.offset)}
-            </a>
-        </li>`
-    ).join('');
-
-    let bookmarkElms = Array.from(document.querySelectorAll("#bookmarks nav ul li a"));
-    bookmarkElms.map(bookmarkElm => {
-        bookmarkElm.addEventListener("click", (e) => {
-            e.preventDefault();
-            Events.trigger('Bookmarks.LoadBookmark', 
-                bookmarkElm.getAttribute('href'));
+    let bookmarksNav = document.querySelector("#bookmarks nav");
+    if (bookmarks.length > 0) {
+        // each bookmark is a clickable list item with a "delete" button, which is disabled if we're not in "edit bookmarks" mode
+        let bookmarksListItems = bookmarks.map(bmk => 
+            `<li>
+                <a href="${bmk.readingOrderItem}#t=${bmk.offset}">
+                    ${bmk.label} @ ${Utils.secondsToHms(bmk.offset)}
+                </a>
+                <button id="bmk-${bmk.id}" ${isEditBookmarks ? '' : `class="disabled"`}>Delete</button>
+            </li>`
+        ).join('');
+        bookmarksNav.innerHTML = "<ul>" + bookmarksListItems + "</ul>" + 
+            `<button id="edit-bookmarks">${isEditBookmarks ? "Done" : "Edit bookmarks"}</button>`;
+        
+        let bookmarkElms = Array.from(document.querySelectorAll("#bookmarks nav ul li a"));
+        bookmarkElms.map(bookmarkElm => {
+            bookmarkElm.addEventListener("click", (e) => {
+                e.preventDefault();
+                Events.trigger('Bookmarks.LoadBookmark', 
+                    bookmarkElm.getAttribute('href'));
+            });
         });
-    });
 
+        let bookmarkDeleteButtons = Array.from(document.querySelectorAll("#bookmarks nav ul li button"));
+        bookmarkDeleteButtons.map(deleteButton => deleteButton.addEventListener("click", async e => {
+            let bmkId = deleteButton.getAttribute("id").split("-")[1];
+            await LocalData.deleteBookmark(bmkId);
+            loadBookmarks();
+        }));
+
+        let bookmarkEditModeButton = document.querySelector("#edit-bookmarks").addEventListener("click", e => {
+            if (isEditBookmarks) {
+                isEditBookmarks = false;
+                let buttons = Array.from(document.querySelectorAll("#bookmarks nav li button"));
+                buttons.map(button => button.classList.add("disabled"));
+                document.querySelector("#edit-bookmarks").textContent = "Edit bookmarks";
+            }
+            else {
+                isEditBookmarks = true;
+                let buttons = Array.from(document.querySelectorAll("#bookmarks nav li button"));
+                buttons.map(button => button.classList.remove("disabled"));
+                document.querySelector("#edit-bookmarks").textContent = "Done";
+            }
+            
+        });
+    }
+    else {
+        bookmarksNav.innerHTML = "<p>No bookmarks</p>";
+        isEditBookmarks = false;
+    }
 }
 
 function loadBookmark(href) {
@@ -203,4 +237,8 @@ function onCaptionsOff() {
     log.info("Caption mode OFF");
     document.querySelector("#player-captions").classList.add("disabled");
     document.querySelector("#player-page").classList.remove("disabled");
+}
+
+function showEditBookmarks() {
+
 }

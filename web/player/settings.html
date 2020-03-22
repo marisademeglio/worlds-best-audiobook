@@ -7,6 +7,9 @@
             body {
                 grid-template-columns: 100% !important;
             }
+            header {
+                display: flex;
+            }
             button {
                 padding: 0.5rem;
                 margin-right: 1rem;
@@ -34,16 +37,20 @@
     <body>
         <header>
             <h1>Settings</h1>
-            <ul>
-                <li><a href="../player" id="playerLink">Back to player</a></li>
-            </ul>
+            <p><a href="../player" id="playerLink">Back to player</a></p>
         </header>
         <main>
-            <ul>
-                <li><button id="clearall">Clear all data</button> <span>Clear bookmarks and last-read positions</span></li>
-            </ul>
 
-            <p id="status" aria-live="polite"></p>
+            <div id="colors">
+                
+            </div>
+
+            <div>
+                <button id="clearall">Clear all data</button> <span>Clear bookmarks and last-read positions</span>
+                <p id="status" aria-live="polite"></p>
+            </div>
+
+            
         </main>
         
     </body>
