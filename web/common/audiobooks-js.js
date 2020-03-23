@@ -335,6 +335,7 @@ function dataValidation(processed) {
     } 
 
     if (!processed_.hasOwnProperty('type') || processed_.type.length == 0 ) {
+        errors.push({severity: "validation", msg: "No type"});
         processed_.type = ['CreativeWork'];
     }
 
@@ -366,7 +367,7 @@ function dataValidation(processed) {
 
     if (processed_.hasOwnProperty('inLanguage')) {
         processed_.inLanguage.filter(lang => !isValidLanguageTag(lang))
-            .map(invalidItem => errors.push({severity: "validation", msg: `Invalid languge tag *${invalidItem}*`}));
+            .map(invalidItem => errors.push({severity: "validation", msg: `Invalid language tag *${invalidItem}*`}));
         processed_.inLanguage = processed_.inLanguage.filter(lang => isValidLanguageTag(lang));
     }
 
@@ -622,10 +623,14 @@ class ManifestProcessor {
     checkContext() {
         if (this.json.hasOwnProperty('@context')) {
             if (this.json['@context'] instanceof Array) {
-                if (this.json['@context'].length >= 2 && 
-                    (this.json['@context'][0] != "https://schema.org" || 
-                        this.json['@context'][1] != "https://www.w3.org/ns/pub-context")) {
+                if (this.json['@context'].length >= 2) {
+                    if (this.json['@context'][0] != "https://schema.org" ||  
+                        this.json['@context'][1] != "https://www.w3.org/ns/pub-context") {
                         throw 'Property "@context" does not contain the required values';
+                    }
+                }
+                else {
+                    throw 'Property @context does not contain the required values';
                 }
             }   
             else {
@@ -773,7 +778,7 @@ class Manifest {
         };
         this.readingOrderIndex = 0;
         this.toc = false;
-        this.version = "0.1.4";
+        this.version = "0.2.0";
     }
     
     setSupportedProfiles(supportedProfiles) {
@@ -787,16 +792,51 @@ class Manifest {
         console.log(`Loading manifest ${url}`);
         let json;
         let url_ = typeof url === "string" ? url : url.href;
+        let base = url_;
         try {
-            let data = await fetchFile(url_);
-            json = JSON.parse(data);
+            let contentType = await fetchContentType(url_);
+            // we're opening an HTML file
+            if (contentType == 'text/html') {
+                let htmlFile = await fetchFile(url_);
+                let dom = new DOMParser().parseFromString(htmlFile, 'text/html');
+                let linkElm = dom.querySelector("link[rel='publication']");
+                if (linkElm === null) {
+                    throw "Publication link not found";
+                }
+                let manifestHref = linkElm.getAttribute('href');
+                if (manifestHref[0] == '#') {
+                    let embeddedManifestElm = dom.querySelector(manifestHref);
+                    if (embeddedManifestElm == null) {
+                        throw `Manifest at ${manifestHref} does not exist`;
+                    }
+                    let baseElm = dom.querySelector('base');
+                    if (baseElm) {
+                        base = baseElm.getAttribute('href');
+                    }
+                    json = JSON.parse(embeddedManifestElm.textContent);
+                }
+                else {
+                    let linkedManifestUrl = new URL(manifestHref, url_);
+                    let data = await fetchFile(linkedManifestUrl);
+                    json = JSON.parse(data);
+                    base = linkedManifestUrl;
+                }
+            }
+            // we're opening a JSON file
+            else if (contentType == 'application/ld+json' || contentType == 'application/json') {
+                let data = await fetchFile(url_);
+                json = JSON.parse(data);
+            }
+            else {
+                throw `Content type *${contentType}* not recognized`;
+            }
         }
         catch(err) {
             this.errors.push({severity: "fatal", msg: `${err}`});
             console.log(err);
             return;
         }
-        await this.loadJson(json, url_, guessProfile);
+        await this.loadJson(json, base, guessProfile);
     }
 
     // base is the baseUrl and has to be a string
