@@ -1,4 +1,4 @@
-import { Manifest } from '../common/audiobooks-js.js';
+import { Manifest } from '../common/audiobooks.js';
 import * as Nav from './nav.js';
 import * as Audio from './audio.js';
 import * as Controls from './controls.js';

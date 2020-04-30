@@ -1,4 +1,4 @@
-import { Manifest } from '../common/audiobooks-js.js';
+import { Manifest } from '../common/audiobooks.js';
 import { isImage } from '../common/utils.js';
 
 document.addEventListener("DOMContentLoaded", () => {
