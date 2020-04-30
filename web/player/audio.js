@@ -98,6 +98,7 @@ async function onAudioTimeUpdate(event) {
     
     if (waitForSeek) {
         waitForSeek = false;
+        Events.trigger('Audio.Play');
         await audio.play();
     }
     else {
