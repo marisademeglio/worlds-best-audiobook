@@ -1,0 +1,8 @@
+:root {
+    --bk: rgba(1,1,1,0.8);
+    --text: white;
+    /* --hltext: rgba(255, 255, 0, 0.9); */
+    --hltext: yellow;
+    --hover: lightyellow;
+    --workaroundbk: rgba(1,1,1,0);
+}

@@ -1,3 +1,5 @@
+@import "../../common/colors.css";
+
 :root {
     --enabled-opacity: 80%;
     --disabled-opacity: 30%;
@@ -34,7 +36,7 @@ footer div.slider {
     align-items: center;
 }
 footer input {
-    background: black;
+    background: var(--workaroundbk);
 }
 footer input::-moz-range-track{
     background-color: lightgray;
@@ -116,12 +118,12 @@ svg {
     pointer-events: all;
 }
 #transport svg:hover {
-    fill: lightyellow;
-    stroke: lightyellow;
+    fill: var(--hover);
+    stroke: var(--hover);
     opacity: 80% !important;
 }
 #bookmark svg:hover line {
-    stroke: black;
+    stroke: var(--bk);
 }
 #mute, #reset-rate {
     width: min-content;
@@ -133,6 +135,9 @@ line.mute-x:not(.muted) {
 #play-pause {
     width: 5rem;
     height: 5rem;
+}
+#chapter-progress span {
+    display: block;
 }
 @media (max-width: 768px) {
     footer {

@@ -63,9 +63,11 @@ div#player-page {
     height: 100%;
 }
 
-div#player-page img {
-    display: block;
-    justify-content: center;
+#cover-image-container {
+    display: grid;
+}
+#cover-image-container img {
+    justify-self: center;
 }
 iframe {
     height: 100%;
@@ -92,6 +94,8 @@ iframe {
     font-size: 3rem;
     text-align: center;
     margin-top: 2rem;
+    color: var(--hltext);
+    opacity: 0.9;
 }
 #edit-bookmarks {
     margin: auto;

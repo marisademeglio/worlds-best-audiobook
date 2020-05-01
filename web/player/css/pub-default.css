@@ -1,18 +1,20 @@
 @import 'base.css';
+@import '../../common/colors.css';
 
 .-active-element {
-    background-color: lightyellow;
-    color: black !important;
-    box-shadow: 0 0 5px lightyellow;
-    border-radius: 3px;
-    padding: 1vh;
+    color: var(--hltext);
+    opacity: 0.9;
+    transition: color 1s;
 }
 
 .-document-playing {
 
 }
+main {
+    line-height: 1.5;
+}
 a, a:visited {
-    color: white;
+    color: var(--text);
     padding-left: 1vh;
     text-decoration: none;
 }
@@ -23,17 +25,14 @@ nav[role=doc-toc] ol {
     /* list-style-type: none; */
     line-height: 5vh;
     padding-left: 0;
-    color: white;
+    color: var(--text);
     grid-column: 1;
 }
 
 nav[role=doc-toc] a.current, nav[role=doc-toc] a.current:visited {
-    background-color: lightyellow;
-    color: black !important;
-    box-shadow: 0 0 5px lightyellow;
-    border-radius: 3px;
-    font-weight: bold;
-    padding: 1vh;
+    color: var(--hltext);
+    opacity: 0.9;
+    transition: color 1s;
 }
 nav[role=doc-toc] li {
     margin-top: 1rem;

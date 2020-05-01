@@ -1,8 +1,10 @@
+@import "../common/colors.css";
+
 body {
     font-family: Arial;
     margin: 2vw;
-    background-color: black;
-    color: white;
+    background-color: var(--bk);
+    color: var(--text);
 }
 
 ul {
@@ -17,9 +19,11 @@ li {
     grid-template-rows: auto 6vh;
     border-radius: 5px;
     padding: 1vh;
+    max-width: 20rem;
+    text-align: center;
 }
 li a, li a:visited {
-    color: white;
+    color: var(--text);
     text-decoration: none;
 }
 
