@@ -25,6 +25,17 @@ function init() {
     document.querySelector("#next").addEventListener("click", e => next());
     document.querySelector("#prev").addEventListener("click", e => prev());
 
+    document.querySelector("#caption-page").addEventListener("click", e => {
+        if (isCaption) {
+            captionsOff();
+            Events.trigger("Captions.Off");
+        }
+        else {
+            captionsOn();
+            Events.trigger("Captions.On");
+        }
+    });
+
     document.querySelector("#rate").value = 100;
     setPlaybackRate(100);
     document.querySelector("#volume").value = 80;
@@ -134,19 +145,15 @@ function showSyncNarrationControls() {
     document.querySelector("#prev").setAttribute("title", "Previous phrase");
 
     document.querySelector("#caption-page").classList.remove("disabled");
-    document.querySelector("#caption").classList.remove("disabled");
-    document.querySelector("#page").classList.add("disabled");
-
-    document.querySelector("#caption-page").addEventListener("click", e => {
-        if (isCaption) {
-            captionsOff();
-            Events.trigger("Captions.Off");
-        }
-        else {
-            captionsOn();
-            Events.trigger("Captions.On");
-        }
-    });
+    if (isCaption) {
+        document.querySelector("#caption").classList.add("disabled");
+        document.querySelector("#page").classList.remove("disabled");
+    }   
+    else {
+        document.querySelector("#caption").classList.remove("disabled");
+        document.querySelector("#page").classList.add("disabled");
+    }
+    
 }
 
 function showAudioControls() {
@@ -158,7 +165,6 @@ function showAudioControls() {
 
     document.querySelector("#next").setAttribute("title", "Skip ahead 30 seconds");
     document.querySelector("#prev").setAttribute("title", "Skip back 30 seconds");
-
     
     document.querySelector("#caption-page").classList.add("disabled");
 
