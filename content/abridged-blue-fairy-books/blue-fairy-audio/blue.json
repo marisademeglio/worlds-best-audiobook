@@ -1,0 +1,73 @@
+{
+    "@context": [
+        "https://schema.org",
+        "https://www.w3.org/ns/pub-context"
+    ],
+    "conformsTo": "https://www.w3.org/TR/audiobooks/",
+    "type": "Audiobook",
+    "id": "blue-fairy-abridged-audio",
+    "url": "https://marisademeglio.github.io/worlds-best-audiobook/content/blue-fairy-abridged/blue-fairy-audio/",
+    "name": "The Abridged Blue Fairy Book",
+    "author": "Andrew Lang",
+    "readBy": "Various",
+    "abridged": "true",
+    "accessMode": "audio",
+    "accessModeSufficient": {
+        "type": "ItemList",
+        "itemListElement": ["audio"],
+        "description": "audio"
+    },
+    "accessibilityFeature": ["readingOrder", "unlocked", "tableOfContents"],
+    "accessibilityHazard": "none",
+    "accessibilitySummary": "Audio plus table of contents",
+    "dateModified": "2020-04-29",
+    "datePublished": "1889",
+    "inLanguage": "en", 
+    "readingProgression": "ltr",
+    "duration": "PT3892S",
+    "readingOrder": [
+        {
+            "url": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_07_lang_64kb.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "Cinderella; or, The Little Glass Slipper",
+            "duration": "PT1170S"
+        },
+        {
+            "url": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_10_lang_64kb.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "Rumpelstiltzkin",
+            "duration": "PT475S"
+        },
+        {
+            "url": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_14_lang_64kb.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "The Master Cat; or, Puss in Boots",
+            "duration": "PT532S"
+        },
+        {
+            "url": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_24_lang_64kb.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "Hansel and Grettel",
+            "duration": "PT1130S"
+        },
+        {
+            "url": "http://www.archive.org/download/blue_fairy_book_0707_librivox/bluefairybook_35_lang_64kb.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "The History of Jack the GiantKiller",
+            "duration": "PT585S"
+        }
+    ],
+    "resources": [
+        {
+            "url": "Blue_Fairy_Book_Audio.jpg",
+            "encodingFormat": "image/jpeg",
+            "rel": "cover"
+        },
+        {
+            "url": "index.html",
+            "encodingFormat": "text/html",
+            "name": "Primary Entry Page",
+            "rel": "contents"
+        }
+    ]
+}
