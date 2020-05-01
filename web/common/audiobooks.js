@@ -1030,7 +1030,12 @@ class ManifestProcessor {
                 this.errors.push({severity: "fatal", msg: "No reading order items available."});
             }
             else {
-                this.processed.readingOrder.push({url});
+                if (this.defaults.toc) {
+                    this.processed.readingOrder.push({url, rel: "contents"});
+                }
+                else {
+                    this.processed.readingOrder.push({url});
+                }
                 this.processed.uniqueResources.push(url);
             }
         }
@@ -1042,7 +1047,7 @@ class ManifestProcessor {
     }
 }
 
-const VERSION = '0.2.3';
+const VERSION = '0.2.4';
 
 class Manifest {
     constructor () {
