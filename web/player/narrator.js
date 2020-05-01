@@ -15,6 +15,8 @@ let position = 0;
 let seekToOffsetOneTime = false;
 let offsetTimestamp = 0;
 
+let previousTextColor = '';
+
 /* Narrator events:
 Done
 Highlight
@@ -22,6 +24,8 @@ Highlight
 
 function setHtmlDocument(doc) {
     htmlDocument = doc;
+
+    Events.on("Document.Click", loadFromElement);
 }
 
 function loadJson(json, offset) {
@@ -115,7 +119,11 @@ function onAudioClipDone() {
 function highlightText(id) {
     let elm = htmlDocument.getElementById(id);
     let text = elm.innerHTML;
+    previousTextColor = elm.style.color;
     elm.classList.add(activeElementClass);
+    if (localStorage.getItem("highlight")) {
+        elm.style.color = localStorage.getItem("highlight");
+    }
     if (!isInViewport(elm, htmlDocument)) {
         elm.scrollIntoView();
     }
@@ -125,6 +133,7 @@ function highlightText(id) {
 function resetTextStyle(id) {
     let elm = htmlDocument.getElementById(id);
     elm.classList.remove(activeElementClass);
+    elm.style.color = previousTextColor;
 }
 
 // find the node that includes this offset
@@ -156,6 +165,21 @@ function flatten (itemsArr, roleValue) {
     .reduce((acc, curr) => acc.concat(curr), []);
     groupId--;
     return flatter;
+}
+
+function loadFromElement(id) {
+    textid = items[position].text.split("#")[1];
+
+    resetTextStyle(textid);
+    
+    let itemIdx = items.findIndex(item => item.text == `#${id}`);
+
+    position = itemIdx;
+    
+    render(
+        items[position],
+        position+1 >= items.length
+    );
 }
 
 /*
