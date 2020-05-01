@@ -33,6 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (urlSearchParams.has("q")) {
         open(urlSearchParams.get("q"));
     }
+
+    if (localStorage.getItem("fontsize")) {
+        document.querySelector("body").style.fontSize = localStorage.getItem("fontsize");
+    }
 });
 
 async function open(url) {
