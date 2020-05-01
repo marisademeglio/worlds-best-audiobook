@@ -13,7 +13,8 @@ program.version('0.0.1');
 program
     .requiredOption('-a, --audiobook <file>', 'audiobook manifest')
     .requiredOption('-s, --sync <folder>', 'sync points folder')
-    .option('-f, --force', 'Overwrite existing output');
+    .option('-f, --force', 'Overwrite existing output')
+    .option('-m, --markup', 'Use narration markup (class="narrate") to determine elements');
 program.parse(process.argv);
 
 let audiobookPath = path.resolve(__dirname, program.audiobook);
@@ -49,22 +50,34 @@ audioManifest.readingOrder.map(item => {
     // if this reading order entry has a corresponding sync points file:
     if (fs.existsSync(syncPointsFilepath)) {
 
-        let pairs = parseSyncPoints(syncPointsFilepath);
-
         // parse the HTML file and prepare the elements
         const dom = new JSDOM(textFile);
         const doc = dom.window.document;
         let body = doc.querySelector("body");
+        let elms = [];
+        // if we're choosing elements based on class="narrate"
+        if (program.markup) {
+            elms = doc.querySelectorAll("*[class='narrate']");
+            elms = Array.from(elms);
+        }
+        // else just grab the first body child and proceed through its siblings
+        else {
+            let elm = body.firstElementChild;
+            while (elm != null) {
+                if (!elm.hasAttribute('id')) {
+                    elms.push(elm);
+                }
+                elm = elm.nextElementSibling;
+            }
+        }
+
+        let pairs = parseSyncPoints(syncPointsFilepath);
         let narration = [];
-        // add IDs
-        let elm = body.firstElementChild;
         let count = 0;
         let idx = 0;
-        while (elm != null) {
-            if (!elm.hasAttribute('id')) {
-                elm.setAttribute('id', `sn-${count}`);
-                count++;
-            }
+        elms.map(elm => {
+            elm.setAttribute('id', `sn-${count}`);
+            count++;
             // this approach depends on the number of elements and number of sync points lining up
             if (idx < pairs.length ) {
                 narration.push({
@@ -75,10 +88,8 @@ audioManifest.readingOrder.map(item => {
             else {
                 console.log("Warning: more elms than pairs ", elm.getAttribute('id'));
             }
-            
             idx++;
-            elm = elm.nextElementSibling;
-        }
+        });
 
         let syncnarrFilename = path.basename(textPath).replace('.html', '.json');
         let syncnarrPath = path.resolve(out_sync, syncnarrFilename);
