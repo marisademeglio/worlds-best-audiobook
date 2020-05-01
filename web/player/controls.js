@@ -9,7 +9,6 @@ let isCaption = false;
 let isSyncNarr = false;
 
 function init() {
-    document.querySelector("#file-length").textContent = '--';
     document.querySelector("#current-position").textContent = '--';
 
     document.querySelector("#rate").addEventListener("input", 
@@ -44,6 +43,7 @@ function init() {
         }
     });
 }
+
 function next() {
     if (isSyncNarr) {
         Narrator.next();
@@ -94,15 +94,19 @@ function setPlaybackVolume(val) {
 }
 
 function onPositionChange(position, fileDuration) {
-    document.querySelector("#current-position").textContent = Utils.secondsToHms(position);
     
+    let currentPosition = Utils.secondsToHms(position);
+    let fileLength = '--';
     if (!isNaN(fileDuration)) {
         let duration = Utils.secondsToHms(fileDuration);
     
-        if (document.querySelector("#file-length").textContent != duration) {
-            document.querySelector("#file-length").textContent = duration;
-        }
+        // if (document.querySelector("#file-length").textContent != duration) {
+        //     document.querySelector("#file-length").textContent = duration;
+        // }
+        fileLength = Utils.secondsToHms(fileDuration);
     }
+
+    document.querySelector("#current-position").textContent = `${currentPosition} of ${fileLength}`;
 }
 
 function onPlay() {
