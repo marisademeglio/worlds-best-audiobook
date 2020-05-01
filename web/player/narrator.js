@@ -24,7 +24,6 @@ Highlight
 
 function setHtmlDocument(doc) {
     htmlDocument = doc;
-
     Events.on("Document.Click", loadFromElement);
 }
 
