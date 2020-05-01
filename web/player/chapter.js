@@ -40,7 +40,7 @@ function loadCover(manifest) {
     let cover = manifest.getCover();
     if (cover) {
         if (Utils.isImage(cover.encodingFormat)) {
-            contentElm.innerHTML = `<img src="${cover.url}" alt="Cover for ${manifest.getTitle()}">`;
+            contentElm.innerHTML = `<div id="cover-image-container"><img src="${cover.url}" alt="Cover for ${manifest.getTitle()}"></div>`;
         }
         else {
             // TODO load html cover
