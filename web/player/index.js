@@ -12,8 +12,8 @@ let isEditBookmarks = false;
 let isCaption = false;
 log.setLevel("trace");
 
-document.addEventListener("DOMContentLoaded", () => {
-    LocalData.initdb();
+document.addEventListener("DOMContentLoaded", async () => {
+    await LocalData.initdb();
     Events.on("Chapter.Done", chapterPlaybackDone);
     Events.on('Nav.LoadContent', loadContent);
     Events.on("Audio.PositionChange", onAudioPositionChange);
