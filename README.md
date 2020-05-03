@@ -42,6 +42,7 @@ Show how web standards make your audio books better.
 * Runs in a web browser
 * Employs principles of web accessibility
 * Built with HTML/CSS/Vanilla JS
+* Uses [audiobooks-js](https://marisademeglio.github.io/audiobooks-js) library
 
 ## Run it locally
 
