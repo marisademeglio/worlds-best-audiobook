@@ -8,7 +8,7 @@ body {
     "header header header"
     "nav main aside"
     "footer footer footer";
-    grid-template-rows: 8vh auto 10vh;
+    grid-template-rows: min-content auto min-content;
     grid-template-columns: 20% auto 20%;
     grid-gap: 1rem;
     overflow: hidden;
@@ -38,6 +38,10 @@ header {
     display: grid;
     grid-template-areas: "title nav";
     grid-template-columns: 80% auto;
+}
+header h1 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 header nav {
     grid-area: nav;
@@ -107,16 +111,34 @@ iframe {
     body {
         grid-template-areas: 
         "header"
-        "nav"
         "main"
         "footer"
+        "nav"
         "aside";
-        grid-template-rows: 5vh min-content auto 20vh min-content;
-        grid-template-columns: 1fr;
-        grid-gap: 1rem;
+        grid-template-rows: min-content auto min-content 20vh min-content;
+        grid-template-columns: 0.9fr;
+        grid-gap: 0.5rem
+        
     }   
-
-    #player-page iframe {
-        width: 70%;
+    header h1 {
+        font-size: medium;
+    }
+    header nav ul {
+        flex-direction: column;
+        font-size: medium;        
+        justify-self: right;
+        margin-top: 1vh;
+    }
+    header nav li {
+        line-height: 1.5;
+    }
+    #player-toc {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+    #edit-bookmarks {
+        margin: 0;
+        width: 3rem;
     }
 }

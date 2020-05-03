@@ -116,8 +116,15 @@ function onPositionChange(position, fileDuration) {
         // }
         fileLength = Utils.secondsToHms(fileDuration);
     }
+    // trim the leading zeros
+    if (currentPosition.indexOf("00:") == 0) {
+        currentPosition = currentPosition.slice(3);
+    }
+    if (fileLength.indexOf("00:") == 0) {
+        fileLength = fileLength.slice(3);
+    }
 
-    document.querySelector("#current-position").textContent = `${currentPosition} of ${fileLength}`;
+    document.querySelector("#current-position").innerHTML = `${currentPosition} of ${fileLength}`;
 }
 
 function onPlay() {
