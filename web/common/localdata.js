@@ -14,7 +14,7 @@ async function initdb() {
                 // If it isn't explicitly set, create a value by auto incrementing.
                 autoIncrement: true,
             });
-            // Create an index on the 'date' property of the objects.
+            // Create an index on the 'pubid' property of the objects.
             store.createIndex('pubid', 'pubid');
         },
     });
@@ -39,9 +39,17 @@ async function deleteAll() {
         }    
     }
 }
-
+async function addPublication(pubid, title) {
+    let pubs = await getPublications();
+    if (!pubs.find(pub => pub.pubid === pubid)) {
+        await db.add('positions', {pubid, title, type: "publication"});
+    }
+}
+async function getPublications() {
+    let alldata = await db.getAll('positions');
+    return alldata.filter(data => data.type === "publication");
+}
 async function removePosition(id) {
-    //await db.delete('positions', id, 'id');
     await db.delete('positions', id);
 }
 async function getPosition(id) {
@@ -111,7 +119,8 @@ export {
     initdb, deletedb, deleteAll, 
     addBookmark, addBookmarkAtCurrentPosition, getBookmarks, 
     getPosition, removePosition, getPositions,
-    getLastRead, updateLastRead, deleteBookmark };
+    getLastRead, updateLastRead, deleteBookmark,
+    addPublication, getPublications };
 
 /* position data:
 
@@ -126,7 +135,7 @@ Required for submitting
 Additional fields added by these functions:
 {
     ...
-    type: "last" | "bmk",
+    type: "last" | "bookmark" | "publication",
     id: ID
 }
 

@@ -56,6 +56,7 @@ async function open(url) {
     }
     document.querySelector("#settingsLink").setAttribute('href', `settings.html?from=${url}`)
     loadPubInfo(manifest);
+    LocalData.addPublication(manifest.data.id, manifest.getTitle());
     await Nav.loadToc(manifest);
 
     let lastReadPosition = await LocalData.getLastRead(manifest.data.id);
@@ -96,6 +97,9 @@ async function loadContent(url, offset=0) {
 
 function onNarratorHighlight(id, innerHTML) {
     document.querySelector("#player-captions").innerHTML = innerHTML;
+    if (localStorage.getItem("highlight")) {
+        document.querySelector("#player-captions").style.color = localStorage.getItem("highlight");
+    }
 }
 
 // event callback
