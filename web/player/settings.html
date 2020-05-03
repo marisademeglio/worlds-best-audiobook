@@ -3,117 +3,9 @@
     <head>
         <title>Settings</title>
         <link rel="stylesheet" href="css/base.css"/>
-        <style>
-            body {
-                grid-template-columns: 100% !important;
-            }
-            header {
-                display: flex;
-            }
-            h2:not(:first-child){
-                margin-top: 3rem;
-            }
-            button {
-                padding: 0.5rem;
-                margin-top: 1rem;
-                margin-right: 1rem;
-                border: thin white solid;
-                border-radius: 4px;
-            }
-            header p {
-                align-self: center;
-                margin-left: auto;
-            }
-            #text-settings {
-                display: grid;
-                grid-template-columns: 50% auto;
-            }
-            #sample-text {
-                width: 20rem;
-                border: thin solid white;
-                padding: 1rem;
-            }
-            
-        </style>
+        <link rel="stylesheet" href="css/settings.css"/>
         <script src="../common/localdata.js" type="module"></script>
-        <script type="module">
-            const HIGHLIGHT = "#ffff00";
-            const FONTSIZE = "medium";
-
-            import { initdb, deleteAll } from '../common/localdata.js';
-            document.addEventListener("DOMContentLoaded", async () => {
-                let urlSearchParams = new URLSearchParams(document.location.search);
-                if (urlSearchParams.has("from")) {
-                    document
-                        .querySelector("#playerLink")
-                        .setAttribute('href', `../player?q=${urlSearchParams.get('from')}`);
-                }
-                
-                await initdb();
-                document.querySelector("#clearall").addEventListener("click", async event => {
-                    await deleteAll();
-                    document.querySelector("#status").textContent = "Data cleared";
-                });
-
-                
-                // read fontsize stored value
-                let currentFontsize = localStorage.getItem("fontsize");
-                if (!currentFontsize || currentFontsize == "") {
-                    currentFontsize = FONTSIZE;
-                    localStorage.setItem("fontsize", currentFontsize);
-                }
-
-                // select the right radio button
-                let fontsizeInputs = Array.from(document.querySelectorAll("input[name=fontsize]"));
-                let currentFontsizeInput = fontsizeInputs.find(input => input.value === currentFontsize);
-                currentFontsizeInput.checked = true;
-
-                // listen for changes to fontsize
-                fontsizeInputs.map(input => input.addEventListener("change", e => {
-                    if (e.target.checked) {
-                        localStorage.setItem("fontsize", e.target.value);
-                        refreshSampleTextStyle();
-                    }
-                }));
-                document.querySelector("#reset-fontsize").addEventListener("click", e => {
-                    localStorage.setItem("fontsize", FONTSIZE);
-                    let selectedFontsize = fontsizeInputs.find(input => input.value === FONTSIZE);                    
-                    selectedFontsize.checked = true;
-                    refreshSampleTextStyle();
-                });
-
-                // read highlight stored value
-                let currentHighlightColor = localStorage.getItem("highlight");
-                if (!currentHighlightColor || currentHighlightColor == "") {
-                    currentHighlightColor = HIGHLIGHT;
-                    localStorage.setItem("highlight", currentHighlightColor);
-                }
-
-                // select the right color
-                document.querySelector("input[type=color]").value = currentHighlightColor;
-                
-                // listen for changes to highlight color
-                document.querySelector("input[type=color]").addEventListener("change", e => {
-                    localStorage.setItem("highlight", e.target.value);
-                    refreshSampleTextStyle();
-                });
-
-                document.querySelector("#reset-highlight").addEventListener("click", e => {
-                    localStorage.setItem("highlight", HIGHLIGHT);
-                    document.querySelector("input[type=color]").value = HIGHLIGHT;
-                    refreshSampleTextStyle();
-                });
-
-                refreshSampleTextStyle();
-
-            });
-
-            function refreshSampleTextStyle() {
-                document.querySelector("#sample-text").style.fontSize = localStorage.getItem("fontsize");
-                document.querySelector("#sample-text .highlight").style.color = localStorage.getItem("highlight");
-                
-            }
-        </script>
+        <script src="settings.js" type="module"></script>
     </head>
     <body>
         <header>
@@ -121,33 +13,18 @@
             <p><a href="../player" id="playerLink">Back to player</a></p>
         </header>
         <main>
-
             <h2>Text</h2>
             <div id="text-settings">
                 <div>
                     <h3>Font size</h3>
-                    
-                    <!-- xx-small, x-small, small, medium, large, x-large, xx-large, xxx-large -->
-                    <input type="radio" id="x-small" name="fontsize" value="x-small">
-                    <label for="x-small">X-Small</label>
-
-                    <input type="radio" id="small" name="fontsize" value="small">
-                    <label for="small">Small</label>
-
-                    <input type="radio" id="medium" name="fontsize" value="medium">
-                    <label for="medium">Medium</label>
-
-                    <input type="radio" id="large" name="fontsize" value="large">
-                    <label for="large">Large</label>
-
-                    <input type="radio" id="x-large" name="fontsize" value="x-large">
-                    <label for="x-large">X-Large</label>
-
-                    <input type="radio" id="xx-large" name="fontsize" value="xx-large">
-                    <label for="xx-large">XX-Large</label>
-
-                    <input type="radio" id="xxx-large" name="fontsize" value="xxx-large">
-                    <label for="xxx-large">XXX-Large</label>
+                    <select name="fontsize">
+                        <option value="x-small">X-Small</option>
+                        <option value="small">Small</option>
+                        <option value="medium">Medium</option>
+                        <option value="large">Large</option>
+                        <option value="x-large">X-Large</option>
+                        <option value="xx-large">XX-Large</option>
+                    </select> 
                     <br>
                     <button id="reset-fontsize">Reset fontsize</button>
 
@@ -166,6 +43,10 @@
 
             <h2>Data</h2>
             <p>Bookmarks and last-read positions</p>
+            <table id="publications">
+                <tbody>
+                </tbody>
+            </table>
             <button id="clearall">Clear all data</button> 
             <p id="status" aria-live="polite"></p>
             

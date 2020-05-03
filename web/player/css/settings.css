@@ -1,0 +1,37 @@
+body {
+    grid-template-columns: 100% !important;
+}
+header {
+    display: flex;
+}
+h2:not(:first-child){
+    margin-top: 3rem;
+}
+button {
+    padding: 0.5rem;
+    margin-top: 1rem;
+    margin-right: 1rem;
+    border: thin white solid;
+    border-radius: 4px;
+}
+header p {
+    align-self: center;
+    margin-left: auto;
+}
+#text-settings {
+    display: grid;
+    grid-template-columns: 50% auto;
+}
+#sample-text {
+    width: 20rem;
+    border: thin solid white;
+    padding: 1rem;
+}
+label[for=highlight] {
+    visibility: hidden;
+}
+@media (max-width: 768px) {
+    #sample-text {
+        width: 70%
+    }
+}
