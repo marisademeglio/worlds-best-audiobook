@@ -35,3 +35,7 @@ label[for=highlight] {
         width: 70%
     }
 }
+
+table td:first-child {
+    width: 30rem;
+}

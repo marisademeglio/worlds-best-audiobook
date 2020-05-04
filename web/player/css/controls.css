@@ -180,3 +180,46 @@ line.mute-x:not(.muted) {
         grid-template-rows: 50% auto auto auto;
     }
 }
+
+@media (orientation: landscape) and (max-height: 500px) {
+    #transport button:not(#play-pause) {
+        width: 3rem;
+        height: 3rem;
+    }
+    #play-pause {
+        width: 4rem;
+        height: 4rem;
+    }
+    #adjust {
+        position: relative;
+        left: -3rem;
+    }
+    #rate-wrapper {
+        display: grid;
+        grid-template-areas: 
+            "label slider value"
+            "reset reset reset";
+        grid-column-gap: 0.5rem;
+        grid-row-gap: 0;
+        align-items: center;
+    }
+    #rate-wrapper label {
+        grid-area: label;
+    }
+    #rate-wrapper input {
+        grid-area: slider;
+    }
+    #rate-wrapper span {
+        grid-area: value;
+    }
+    #rate-wrapper button {
+        grid-area: reset;
+        justify-self: center;
+    }
+    #adjust label {
+        visibility: hidden;
+    }
+    #volume-wrapper {
+        display: none;
+    }
+}

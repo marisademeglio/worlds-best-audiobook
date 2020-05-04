@@ -115,7 +115,7 @@ iframe {
         "footer"
         "nav"
         "aside";
-        grid-template-rows: min-content auto min-content 20vh min-content;
+        grid-template-rows: min-content auto min-content min-content min-content;
         grid-template-columns: 0.9fr;
         grid-gap: 0.5rem
         
@@ -140,5 +140,17 @@ iframe {
     #edit-bookmarks {
         margin: 0;
         width: 3rem;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    header h1 {
+        font-size: medium;
+    }
+    header nav {
+        font-size: medium;
+    }
+    #player-toc iframe {
+        width: 99%;    
     }
 }
