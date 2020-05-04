@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // just grab the title and cover image for display
 async function populateTitles() {
+    console.log(titles);
     // titles are defined in the main library document
     Promise.all(
         titles.map(async title => {
