@@ -55,6 +55,7 @@ async function open(url) {
         Controls.init();
     }
     document.querySelector("#settingsLink").setAttribute('href', `settings.html?from=${url}`)
+    document.title = `Audiobook: ${manifest.getTitle()}`;
     loadPubInfo(manifest);
     LocalData.addPublication(manifest.data.id, manifest.getTitle());
     await Nav.loadToc(manifest);
