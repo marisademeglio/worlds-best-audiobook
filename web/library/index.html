@@ -7,14 +7,16 @@
         <link rel="stylesheet" href="style.css"/>
         <link rel="icon" type="image/svg+xml" href="../common/icon.svg"/>
         <script src="../common/moment.js"></script>
-        <script type="text/javascript" id="library">
+        <script type="module" src="index.js"></script>
+        <script type="module">
+            import * as Library from './index.js';
             const titles = [
                 "../../content/abridged-blue-fairy-books/blue-fairy-audio/index.html",
                 "../../content/abridged-blue-fairy-books/blue-fairy-audio-html/index.html",
                 "../../content/abridged-blue-fairy-books/blue-fairy-syncnarr/index.html"
             ];
+            Library.init(titles);
         </script>
-        <script type="module" src="index.js"></script>
     </head>
     <body>
         <h1>Audiobooks Library</h1>

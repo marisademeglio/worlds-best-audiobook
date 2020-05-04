@@ -1,12 +1,12 @@
 import { Manifest } from '../common/audiobooks.js';
 import { isImage } from '../common/utils.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    populateTitles();
-});
+async function init(titles) {
+    await populateTitles(titles);
+}
 
 // just grab the title and cover image for display
-async function populateTitles() {
+async function populateTitles(titles) {
     console.log(titles);
     // titles are defined in the main library document
     let i;
@@ -48,3 +48,6 @@ async function populateTitles() {
     });  
 }
 
+export {
+    init
+};
