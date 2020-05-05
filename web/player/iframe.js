@@ -7,7 +7,8 @@ async function initIframe(url, parentSelector) {
         // disable the iframe parent element while we change the content and apply a stylesheet
         // but if it's already disabled, don't re-enable it at the end of this function 
         // because it means we're in captions mode and we want it to stay disabled
-        let wasAlreadyDisabled = content.classList.contains('disabled');
+        let wasAlreadyDisabled = content.classList.contains('disabled') && 
+            !document.querySelector("#player-captions").classList.contains('disabled');
         if (!wasAlreadyDisabled) {
             content.classList.add('disabled');
         }
