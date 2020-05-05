@@ -14,8 +14,9 @@ let textid = '';
 let position = 0;
 let seekToOffsetOneTime = false;
 let offsetTimestamp = 0;
-
+let autoplayFirstItem = true;
 let previousTextColor = '';
+let startingPosition = 0;
 
 /* Narrator events:
 Done
@@ -27,23 +28,24 @@ function setHtmlDocument(doc) {
     Events.on("Document.Click", loadFromElement);
 }
 
-function loadJson(json, offset) {
+function loadJson(json, autoplay, offset) {
     properties = json.properties;
+    autoplayFirstItem = autoplay;
     documentPlayingClass = json.properties.hasOwnProperty("sync-media-document-playing") ? 
       json.properties["sync-media-document-playing"] : documentPlayingClass;
     activeElementClass = json.properties.hasOwnProperty("sync-media-active-element") ? 
       json.properties["sync-media-active-element"] : activeElementClass;
     items = flatten(json.narration);
+
     Events.off("Audio.ClipDone", onAudioClipDone);
     Events.on("Audio.ClipDone", onAudioClipDone);
-
     log.debug("Starting sync narration");
     position = offset != 0 ? findOffsetPosition(offset) : 0;
     if (position != 0) {
         seekToOffsetOneTime = true;
         offsetTimestamp = offset;
     }
-    
+    startingPosition = position;
     render(items[position]);
     htmlDocument.getElementsByTagName("body")[0].classList.add(documentPlayingClass);
 }
@@ -63,7 +65,7 @@ function next() {
     }
     else {
         htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
-        log.debug("Document done");
+        log.debug("Narration document done");
         Events.trigger('Narrator.Done', '');
     }
 }
@@ -83,7 +85,7 @@ function prev() {
     }
     else {
         htmlDocument.getElementsByTagName("body")[0].classList.remove(documentPlayingClass);
-        log.debug("Start of document");
+        log.debug("Start of narration document");
     }
 }
 
@@ -107,7 +109,8 @@ function render(item, isLast) {
         seekToOffsetOneTime = false;
     }
 
-    Audio.playClip(audiofile, start, end, isLast);
+    let autoplay = startingPosition == position ? autoplayFirstItem : true;
+    Audio.playClip(audiofile, autoplay, start, end, isLast);
 }
 
 function onAudioClipDone() {

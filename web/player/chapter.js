@@ -7,7 +7,7 @@ import * as Controls from './controls.js';
 import { initIframe } from './iframe.js';
 
 // load content doc into the content pane
-async function play(manifest, offset=0) {
+async function play(manifest, autoplay, offset=0) {
     let readingOrderItem = manifest.getCurrentReadingOrderItem();
     Nav.setCurrentTocItem(readingOrderItem.url);
     
@@ -23,13 +23,13 @@ async function play(manifest, offset=0) {
             }
             else if (readingOrderItem.alternate[0].encodingFormat == "application/vnd.syncnarr+json") {
                 log.info("Player: alternate is sync narration");
-                await loadSyncNarration(readingOrderItem.alternate[0].url, offset);
+                await loadSyncNarration(readingOrderItem.alternate[0].url, autoplay, offset);
             }
         }
         else {
             log.info("Player: content is audio");
             loadCover(manifest);
-            loadAudio(readingOrderItem.url, offset);
+            loadAudio(readingOrderItem.url, autoplay, offset);
         }
     }
 }
@@ -52,13 +52,13 @@ async function loadHtml(url) {
    await initIframe(url, "#player-page");
 }
 
-function loadAudio(url, offset=0) {
+function loadAudio(url, autoplay=true, offset=0) {
     Controls.showAudioControls();
     Events.on('Audio.ClipDone', onAudioClipDone);
-    Audio.playClip(url, offset, -1, true);
+    Audio.playClip(url, autoplay, offset, -1, true);
 }
 
-async function loadSyncNarration(url, offset=0) {
+async function loadSyncNarration(url, autoplay=true, offset=0) {
     Controls.showSyncNarrationControls();
     Events.on('Narrator.Done', onNarratorDone);
     let data = await Utils.fetchFile(url);
@@ -67,7 +67,7 @@ async function loadSyncNarration(url, offset=0) {
 
     let iframeDoc = await initIframe(htmlfile, "#player-page");
     Narrator.setHtmlDocument(iframeDoc);
-    Narrator.loadJson(syncnarrJson, offset);
+    Narrator.loadJson(syncnarrJson, autoplay, offset);
 }
 
 function onAudioClipDone(src) {

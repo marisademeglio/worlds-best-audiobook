@@ -70,7 +70,7 @@ async function open(url) {
         : 
         manifest.getCurrentReadingOrderItem();
     if (readingOrderItem) {
-        loadContent(readingOrderItem.url, lastReadPosition ? 
+        loadContent(readingOrderItem.url, false, lastReadPosition ? 
             lastReadPosition.offset ? lastReadPosition.offset : 0 : 0);
     }
     else {
@@ -86,13 +86,13 @@ function loadPubInfo(manifest) {
 }
 
 // load content doc into the content pane
-async function loadContent(url, offset=0) {
+function loadContent(url, autoplay=true, offset=0) {
     log.debug(`Player: loading content ${url} @ ${offset}`);
     let readingOrderItem = manifest.updateCurrentReadingOrderIndex(url);
     saveChapterPosition(manifest.getCurrentReadingOrderItem());
     
     if (readingOrderItem) {
-        Chapter.play(manifest, offset);
+        Chapter.play(manifest, autoplay, offset);
     }
 }
 

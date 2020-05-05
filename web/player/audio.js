@@ -15,9 +15,9 @@ let clip = {
     start: 0,
     end: 0,
     file: '',
-    isLastClip: false
+    isLastClip: false,
+    autoplay: true
 };
-
 let audio = null;
 let waitForSeek = false;
 
@@ -38,11 +38,11 @@ function loadFile(file) {
     audio.addEventListener('timeupdate', e => { onAudioTimeUpdate(e) });
 }
 
-function playClip(file, start = 0, end = -1, isLastClip = false) {
+function playClip(file, autoplay, start = 0, end = -1, isLastClip = false) {
     clip.start = parseFloat(start);
     clip.end = parseFloat(end);
     clip.isLastClip = isLastClip;
-    
+    clip.autoplay = autoplay;
     if (file != clip.file) {
         loadFile(file);
     }
@@ -87,8 +87,14 @@ async function onAudioProgress(event) {
     if (audio.currentTime == 0 && !isPlaying()) {
         log.debug("Audio Player: starting playback");
         audio.currentTime = clip.start;
-        Events.trigger('Audio.Play');
-        await audio.play();
+        
+        if (clip.autoplay) {
+            Events.trigger('Audio.Play');
+            await audio.play();
+        }
+        else {
+            Events.trigger('Audio.Pause');
+        }
     }
 }
 
