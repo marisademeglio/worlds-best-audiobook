@@ -10,13 +10,13 @@
     "name": "The Abridged Blue Fairy Book (with Text)",
     "author": "Andrew Lang",
     "readBy": "Various",
-    "abridged": "true",
+    "abridged": true,
     "accessMode": ["audio", "text"],
-    "accessModeSufficient": {
+    "accessModeSufficient": [{
         "type": "ItemList",
         "itemListElement": ["audio", "text"],
         "description": "audio and text"
-    },
+    }],
     "accessibilityFeature": ["readingOrder", "unlocked", "tableOfContents", "highContrastDisplay"],
     "accessibilityHazard": "none",
     "accessibilitySummary": "Audio plus table of contents and text for each chapter.",
@@ -86,7 +86,8 @@
         {
             "url": "Blue_Fairy_Book_Audio_Html.jpg",
             "encodingFormat": "image/jpeg",
-            "rel": "cover"
+            "rel": "cover",
+            "name": "Cover"
         },
         {
             "url": "index.html",
