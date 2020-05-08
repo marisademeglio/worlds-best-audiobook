@@ -8,7 +8,7 @@ body {
     "header header header"
     "nav main aside"
     "footer footer footer";
-    grid-template-rows: min-content auto min-content;
+    grid-template-rows: min-content minmax(auto, 78%) min-content;
     grid-template-columns: 20% auto 20%;
     grid-gap: 1rem;
     overflow: hidden;
@@ -29,6 +29,10 @@ body > nav details {
 }
 body > nav details div {
     height: 100%;
+}
+
+body > nav div {
+    overflow-y: scroll;
 }
 
 header {
