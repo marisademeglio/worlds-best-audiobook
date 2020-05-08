@@ -35,11 +35,16 @@ async function fetchContentType(file) {
     }
     if (res) {
         let contentType = res.headers.get("Content-Type");
-        if (contentType.indexOf(';') != -1) {
-            return contentType.split(';')[0];
+        if (contentType) {
+            if (contentType.indexOf(';') != -1) {
+                return contentType.split(';')[0];
+            }
+            else {
+                return contentType;
+            }
         }
         else {
-            return contentType;
+            return '';
         }
     }
     return '';
@@ -664,7 +669,11 @@ function audiobooksDataValidation(processed) {
             return acc;
         }, 0);
 
-        if (totalDuration != getDurationInSeconds(processed_.duration)) {
+        // round to 3 decimal places before comparing
+        let durationA = parseFloat(totalDuration).toFixed(3);
+        let durationB = parseFloat(processed_.duration.replace("PT", "").replace("S", "")).toFixed(3);
+
+        if (durationA != durationB) {
             errors.push({severity: "validation", msg: 'Incorrect value for top-level property "duration"'});
         }
     }
@@ -903,7 +912,9 @@ class ManifestProcessor {
         // }
         // this would be taken care of by 'normalize' except that doesn't happen until later
         // and some things we'd like to know now (in the case of guessing the profile)
-        if (typeof this.json.readingOrder === "string") {
+        if ((typeof this.json.readingOrder === "string" 
+            || this.json.readingOrder instanceof Object)
+             && !(this.json.readingOrder instanceof Array) ) {
             this.json.readingOrder = [this.json.readingOrder];
         }
         // make an intermediate list of reading order objects
@@ -1047,7 +1058,7 @@ class ManifestProcessor {
     }
 }
 
-const VERSION = '0.2.4';
+const VERSION = '0.2.6';
 
 class Manifest {
     constructor () {
@@ -1091,6 +1102,7 @@ class Manifest {
         let url_ = typeof url === "string" ? url : url.href;
         let base = url_;
         let contentType = '';
+        this.errors = [];
         try {
             contentType = await fetchContentType(url_);
             // we're opening an HTML file
@@ -1276,8 +1288,13 @@ class Manifest {
 
     // get a resource based on its rel value
     getResource(rel) {
-        let resource = this.data.resources.find(r => r.rel ? r.rel.includes(rel) : false);
-        return resource ? resource : null;
+        if (this.data.hasOwnProperty("resources")) {
+            let resource = this.data.resources.find(r => r.rel ? r.rel.includes(rel) : false);
+            return resource ? resource : null;
+        }
+        else {
+            return null;
+        }
     }
     // for a localizable string, get the most sensible value, based on lang settings
     getL10NStringValue(l10nString, lang = '') {
