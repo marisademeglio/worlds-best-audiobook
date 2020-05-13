@@ -37,7 +37,7 @@ async function loadHtmlToc(url) {
 function loadGeneratedToc(data, base) {
     base = base;
     tocdoc = document;
-    let tocElm = document.querySelector("#player-toc")
+    let tocElm = document.querySelector("#player-toc details div")
     tocElm.innerHTML = `
     <nav role='doc-toc'>
         <ol>

@@ -67,7 +67,7 @@ async function loadSyncNarration(url, autoplay=true, offset=0) {
 
     let iframeDoc = await initIframe(htmlfile, "#player-page");
     Narrator.setHtmlDocument(iframeDoc);
-    Narrator.loadJson(syncnarrJson, autoplay, offset);
+    Narrator.loadJson(syncnarrJson, url, autoplay, offset);
 }
 
 function onAudioClipDone(src) {

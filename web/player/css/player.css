@@ -9,7 +9,7 @@ body {
     "nav main aside"
     "footer footer footer";
     grid-template-rows: min-content minmax(auto, 78%) min-content;
-    grid-template-columns: 20% auto 20%;
+    grid-template-columns: 15% auto 20%;
     grid-gap: 1rem;
     overflow: hidden;
 }

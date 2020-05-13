@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function open(url) {
     manifest = new Manifest();
+    window.manifest = manifest;
     manifest.supportedProfiles = [{
         id: 'https://www.w3.org/TR/audiobooks/',
         encodingFormats: ['audio/mpeg']
