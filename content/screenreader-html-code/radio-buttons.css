@@ -1,0 +1,13 @@
+main {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 2rem;
+}
+
+pre.language-markup {
+    font-size: x-small;
+}
+
+form {
+    line-height: 3;
+}

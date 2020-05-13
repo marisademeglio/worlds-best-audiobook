@@ -1,0 +1,49 @@
+{
+    "@context": [
+        "https://schema.org",
+        "https://www.w3.org/ns/pub-context"
+    ],
+    "conformsTo": "https://www.w3.org/TR/audiobooks/",
+    "type": "Audiobook",
+    "id": "screenreader-html-code",
+    "url": "https://marisademeglio.github.io/worlds-best-audiobook/content/screenreader-html-code/",
+    "name": "Example: Screenreader and HTML Code",
+    "author": "Adrian Roselli",
+    "readBy": "Various",
+    "abridged": false,
+    "accessMode": ["audio", "text"],
+    "accessModeSufficient": [{
+        "type": "ItemList",
+        "itemListElement": ["audio", "text"],
+        "description": "audio and text"
+    }],
+    "accessibilityFeature": ["readingOrder", "unlocked", "tableOfContents"],
+    "accessibilityHazard": "none",
+    "accessibilitySummary": "Audio plus table of contents and synchronized text highlight",
+    "dateModified": "2020-04-29",
+    "datePublished": "1889",
+    "inLanguage": "en", 
+    "readingProgression": "ltr",
+    "duration": "PT3892S",
+    "readingOrder": [
+        {
+            "url": "radio-buttons.mp3",
+            "encodingFormat": "audio/mpeg",
+            "name": "Radio Buttons",
+            "duration": "PT1170S",
+            "alternate": {
+                "type": "LinkedResource",
+                "url": "radio-buttons.json",
+                "encodingFormat": "application/vnd.syncnarr+json"
+            }
+        }
+    ],
+    "resources": [
+        {
+            "url": "cover.png",
+            "encodingFormat": "image/png",
+            "rel": "cover",
+            "name": "Cover"
+        }
+    ]
+}
