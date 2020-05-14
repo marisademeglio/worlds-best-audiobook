@@ -97,7 +97,7 @@ function loadContent(url, autoplay=true, offset=0) {
     }
 }
 
-function onNarratorHighlight(id, innerHTML) {
+function onNarratorHighlight(ids, innerHTML) {
     document.querySelector("#player-captions").innerHTML = innerHTML;
     if (localStorage.getItem("highlight")) {
         document.querySelector("#player-captions").style.color = localStorage.getItem("highlight");

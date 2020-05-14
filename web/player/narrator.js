@@ -15,7 +15,7 @@ let position = 0;
 let seekToOffsetOneTime = false;
 let offsetTimestamp = 0;
 let autoplayFirstItem = true;
-let previousTextColor = '';
+let previousTextColors = {};
 let startingPosition = 0;
 let base = '';
 
@@ -30,6 +30,7 @@ function setHtmlDocument(doc) {
 }
 
 function loadJson(json, baseurl, autoplay, offset) {
+    previousTextColors = {};
     properties = json.properties;
     base = baseurl;
     autoplayFirstItem = autoplay;
@@ -130,16 +131,24 @@ function onAudioClipDone(src) {
 
 function highlightText(ids) {
     let elm;
+    let text = '';
     ids.map(id => {
         elm = htmlDocument.getElementById(id);
-        let text = elm.innerHTML;
-        previousTextColor = elm.style.color;
-        elm.classList.add(activeElementClass);
-        if (localStorage.getItem("highlight")) {
+        text += `${elm.innerHTML}<br><br>`;
+        // save the current colors so we can un-highlight the element later
+        previousTextColors[id] = {"color": elm.style.color, "bk": elm.style.backgroundColor};
+        if (localStorage.getItem("use-custom-highlight") === "true") {
+            // use custom colors
             elm.style.color = localStorage.getItem("highlight");
+            elm.style.backgroundColor = localStorage.getItem("highlight-bk");
         }
-        Events.trigger("Narrator.Highlight", id, text);
+        else {
+            // use publication defaults
+            elm.classList.add(activeElementClass);
+        }
+        
     });
+    Events.trigger("Narrator.Highlight", ids, text);
 
     // this is tricky because we can't possibly scroll all of them into view
     // the last element wins, I guess
@@ -152,7 +161,8 @@ function resetTextStyle(ids) {
     ids.map(id => {
         let elm = htmlDocument.getElementById(id);
         elm.classList.remove(activeElementClass);
-        elm.style.color = previousTextColor;
+        elm.style.color = previousTextColors[id].color;
+        elm.style.backgroundColor = previousTextColors[id].bk;
     });
 }
 
