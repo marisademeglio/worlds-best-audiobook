@@ -1,5 +1,7 @@
 const HIGHLIGHT = "#ffff00";
+const HIGHLIGHTBK = "#000000";
 const FONTSIZE = "medium";
+const USE_CUSTOM_HIGHLIGHT = false;
 
 import * as LocalData from '../common/localdata.js';
 document.addEventListener("DOMContentLoaded", async () => {
@@ -16,7 +18,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.querySelector("#status").textContent = "Data cleared";
         document.querySelector("#publications tbody").innerHTML = '';
     });
-
     
     // read fontsize stored value
     let currentFontsize = localStorage.getItem("fontsize");
@@ -37,6 +38,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         refreshSampleTextStyle();
     });
 
+    // read "use custom highlight" stored value
+    let useCustomHighlight = localStorage.getItem("use-custom-highlight") === "true";
+    if (!useCustomHighlight || useCustomHighlight == "") {
+        useCustomHighlight = USE_CUSTOM_HIGHLIGHT;
+        localStorage.setItem("use-custom-highlight", useCustomHighlight);
+    }
+    // listen for changes to 'use custom highlight'
+    let useCustomHighlightInput = document.querySelector("#use-custom-highlight");
+    useCustomHighlightInput.value = useCustomHighlight;
+    useCustomHighlightInput.addEventListener("change", e => {
+        localStorage.setItem("use-custom-highlight", e.target.checked);
+        enableDisableCustomHighlightSection();
+    });
+
+
     // read highlight stored value
     let currentHighlightColor = localStorage.getItem("highlight");
     if (!currentHighlightColor || currentHighlightColor == "") {
@@ -45,22 +61,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // select the right color
-    document.querySelector("input[type=color]").value = currentHighlightColor;
+    document.querySelector("#hl").value = currentHighlightColor;
     
     // listen for changes to highlight color
-    document.querySelector("input[type=color]").addEventListener("change", e => {
+    document.querySelector("#hl").addEventListener("change", e => {
         localStorage.setItem("highlight", e.target.value);
+        refreshSampleTextStyle();
+    });
+
+    // read highlight-bk stored value
+    let currentHighlightColorBk = localStorage.getItem("highlight-bk");
+    if (!currentHighlightColorBk || currentHighlightColorBk == "") {
+        currentHighlightColorBk = HIGHLIGHTBK;
+        localStorage.setItem("highlight-bk", currentHighlightColorBk);
+    }
+
+    // select the right color
+    document.querySelector("#hlbk").value = currentHighlightColorBk;
+    
+    // listen for changes to highlightbk color
+    document.querySelector("#hlbk").addEventListener("change", e => {
+        localStorage.setItem("highlight-bk", e.target.value);
         refreshSampleTextStyle();
     });
 
     document.querySelector("#reset-highlight").addEventListener("click", e => {
         localStorage.setItem("highlight", HIGHLIGHT);
-        document.querySelector("input[type=color]").value = HIGHLIGHT;
+        document.querySelector("#hl").value = HIGHLIGHT;
+        document.querySelector("#hlbk").value = HIGHLIGHTBK;
         refreshSampleTextStyle();
     });
 
     refreshSampleTextStyle();
-
+    enableDisableCustomHighlightSection();
     await loadBookData();
 
 });
@@ -68,7 +101,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 function refreshSampleTextStyle() {
     document.querySelector("#sample-text").style.fontSize = localStorage.getItem("fontsize");
     document.querySelector("#sample-text .highlight").style.color = localStorage.getItem("highlight");
+    document.querySelector("#sample-text .highlight").style.backgroundColor = localStorage.getItem("highlight-bk");
     
+}
+
+function enableDisableCustomHighlightSection() {
+    if (localStorage.getItem("use-custom-highlight") == "true") {
+        document.querySelector("#use-custom-highlight").checked = true;
+        document.querySelector("#custom-highlight fieldset").removeAttribute("disabled");
+        document.querySelector("#custom-highlight").classList.remove("disabled");
+    }
+    else {
+        document.querySelector("#use-custom-highlight").checked = false;
+        document.querySelector("#custom-highlight fieldset").setAttribute("disabled", "disabled");
+        document.querySelector("#custom-highlight").classList.add("disabled");
+    }
 }
 
 async function clearLastRead(pubid) {

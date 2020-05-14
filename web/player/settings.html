@@ -33,16 +33,32 @@
                     <button id="reset-fontsize">Reset fontsize</button>
 
                     <h3>Highlight</h3>
-                    <input type="color" id="head" name="highlight">
-                    <label for="highlight">Highlighted text color</label>
-                    <br>
-                    <button id="reset-highlight">Reset highlight</button>
+                    <input type="checkbox" id="use-custom-highlight">
+                    <label for="use-custom-highlight">Use my highlight settings</label>
+                    <div id="custom-highlight">
+                        <fieldset>
+                            <div>
+                                <input type="color" id="hl" name="highlight">
+                                <label for="highlight">Highlighted text color</label>
+                            </div>
+                            
+                            <div>
+                                <input type="color" id="hlbk" name="highlight-bk">
+                                <label for="highlight-bk">Highlighted text background</label>
+                            </div>
+                            
+                            <button id="reset-highlight">Reset highlight</button>
+                        </fieldset>
+                        <p id="sample-text">
+                            <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. </span>
+                            <span class="highlight">Ratione nisi, consequuntur saepe animi eum alias vero dolorem. </span>
+                            <span>Assumenda cum deserunt labore pariatur ut obcaecati, optio minima qui ducimus fuga laudantium?</span>
+                        </p>
+
+                    </div>
+
                 </div>   
-                <p id="sample-text">
-                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. </span>
-                    <span class="highlight">Ratione nisi, consequuntur saepe animi eum alias vero dolorem. </span>
-                    <span>Assumenda cum deserunt labore pariatur ut obcaecati, optio minima qui ducimus fuga laudantium?</span>
-                </p>
+                
             </div>
 
             <h2>Data</h2>
