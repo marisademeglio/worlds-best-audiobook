@@ -1,3 +1,14 @@
+:root {
+    --bk: rgba(1,1,1,0.8);
+    --text: white;
+    --hltext: yellow;
+    --hover: lightyellow;
+}
+body {
+    font-family: Arial;
+    background-color: var(--bk);
+    color: var(--text);
+}
 main {
     display: grid;
     grid-template-columns: 50% 50%;
@@ -9,7 +20,7 @@ pre.language-markup {
 }
 
 form {
-    line-height: 3;
+    line-height: 2;
 }
 
 .-active-element, .-active-element * {
