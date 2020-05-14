@@ -11,3 +11,14 @@ pre.language-markup {
 form {
     line-height: 3;
 }
+
+.-active-element, .-active-element * {
+    color: lightyellow !important;
+    background-color: black !important;
+    opacity: 0.9;
+    transition: color .2s;
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+    text-shadow: none;
+}
