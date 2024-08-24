@@ -38,11 +38,11 @@ async function initIframe(url, parentSelector) {
                         });
                     }
                     
-                    resolve(iframe.contentDocument);
+                    resolve(iframe.contentWindow);
                 }
                 else {
                     log.info("Document has default style, not modifying it");
-                    resolve(iframe.contentDocument);
+                    resolve(iframe.contentWindow);
                 }
             }
             else {

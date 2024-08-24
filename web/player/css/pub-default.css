@@ -1,15 +1,10 @@
 @import 'base.css';
 @import '../../common/colors.css';
 
-.-active-element {
+::highlight(sync) {
     color: var(--hltext);
-    opacity: 0.9;
-    transition: color .4s;
 }
 
-.-document-playing {
-
-}
 main {
     line-height: 1.5;
 }

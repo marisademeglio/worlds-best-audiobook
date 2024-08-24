@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     Events.on("Request.Pubid", onRequestPubId);
     Events.on("Bookmarks.Refresh", onBookmarksRefresh);
     Events.on("Bookmarks.LoadBookmark", loadBookmark);
-    Events.on("Narrator.Highlight", onNarratorHighlight);
     Events.on("Captions.On", onCaptionsOn);
     Events.on("Captions.Off", onCaptionsOff);
 

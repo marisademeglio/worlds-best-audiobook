@@ -20,7 +20,8 @@ async function loadToc(manifest) {
 }
 
 async function loadHtmlToc(url) {
-    tocdoc = await initIframe(url, "#player-toc details div");
+    let tocwin = await initIframe(url, "#player-toc details div");
+    tocdoc = tocwin.document;
     let navListElms = Array.from(tocdoc.querySelectorAll("[role=doc-toc] a"));
     navListElms.map(navListElm => {
         navListElm.addEventListener("click", (e) => {

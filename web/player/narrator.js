@@ -6,17 +6,10 @@ import * as Events from './events.js';
 import * as Audio from './audio.js';
 
 let htmlDocument = null;
-let items = [];
-let properties = {};
-let documentPlayingClass = '-document-playing';
-let activeElementClass = '-active-element';
-let textids = [];
+let cues = [];
 let position = 0;
 let seekToOffsetOneTime = false;
-let offsetTimestamp = 0;
 let autoplayFirstItem = true;
-let previousTextColors = {};
-let startingPosition = 0;
 let base = '';
 
 /* Narrator events:
@@ -29,29 +22,14 @@ function setHtmlDocument(doc) {
     Events.on("Document.Click", loadFromElement);
 }
 
-function loadJson(json, baseurl, autoplay, offset) {
+function loadJson(json, autoplay, offset) {
     previousTextColors = {};
     properties = json.properties;
-    base = baseurl;
+    
     autoplayFirstItem = autoplay;
-    documentPlayingClass = json.properties.hasOwnProperty("sync-media-document-playing") ? 
-      json.properties["sync-media-document-playing"] : documentPlayingClass;
-    activeElementClass = json.properties.hasOwnProperty("sync-media-active-element") ? 
-      json.properties["sync-media-active-element"] : activeElementClass;
-    items = flatten(json.narration);
-    // make sure all text properties are arrays
-    items = items.map(item => item.hasOwnProperty("text") && !(item.text instanceof Array) ? ({...item, text: [item.text]}) : item);
-
-    Events.off("Audio.ClipDone", onAudioClipDone);
     
     log.debug("Starting sync narration");
-    position = offset != 0 ? findOffsetPosition(offset) : 0;
-    if (position != 0) {
-        seekToOffsetOneTime = true;
-        offsetTimestamp = offset;
-    }
-    startingPosition = position;
-    Events.on("Audio.ClipDone", onAudioClipDone);
+    
     render(items[position]);
     htmlDocument.getElementsByTagName("body")[0].classList.add(documentPlayingClass);
 }
@@ -96,10 +74,6 @@ function prev() {
 }
 
 function render(item, isLast) {
-    /*if (item['role'] != '') {
-        // this is a substructure
-        onCanEscape(item["role"]);
-    }*/
     textids = item.text.map(textitem => textitem.split("#")[1]);
     highlightText(textids);
 
@@ -212,19 +186,6 @@ function loadFromElement(id) {
         position+1 >= items.length
     );
 }
-
-/*
-function escape() {
-    console.log("Escape");
-    
-    let textid = items[position].text.split("#")[1];
-    resetTextStyle(textid);
-
-    position = items.slice(position).findIndex(thing => thing.groupId !== items[position].groupId) 
-        + (items.length - items.slice(position).length) - 1;
-    next();
-}
-*/
 
 export { 
     loadJson,

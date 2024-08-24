@@ -2,34 +2,41 @@ import * as Nav from './nav.js';
 import * as Events from './events.js';
 import * as Audio from './audio.js';
 import * as Utils from '../common/utils.js';
-import * as Narrator from './narrator.js';  
 import * as Controls from './controls.js';
+import * as Hilite from './highlight.js';
+
 import { initIframe } from './iframe.js';
+
 
 // load content doc into the content pane
 async function play(manifest, autoplay, offset=0) {
     let readingOrderItem = manifest.getCurrentReadingOrderItem();
     Nav.setCurrentTocItem(readingOrderItem.url);
     
-    Events.off('Audio.ClipDone', onAudioClipDone);
-    Events.off('Narrator.Done', onNarratorDone);
-    
     if (Utils.isAudio(readingOrderItem.encodingFormat)) {
         if (readingOrderItem.hasOwnProperty('alternate')) {
-            if (readingOrderItem.alternate[0].encodingFormat == "text/html") {
-                log.info("Player: alternate is HTML");
-                await loadHtml(readingOrderItem.alternate[0].url);
-                loadAudio(readingOrderItem.url, offset);
+            let alt = readingOrderItem.alternate;
+            if (alt.length > 1) {
+                let html = alt.find(item => item.encodingFormat == "text/html");
+                let vtt = alt.find(item => item.encodingFormat == "text/vtt");
+                if (html && vtt) {
+                    log.info("Player: alternate is HTML + VTT");
+                    await loadHtml(alt[0].url);
+                    await loadAudio(readingOrderItem.url, vtt.url);
+                }
             }
-            else if (readingOrderItem.alternate[0].encodingFormat == "application/vnd.syncnarr+json") {
-                log.info("Player: alternate is sync narration");
-                await loadSyncNarration(readingOrderItem.alternate[0].url, autoplay, offset);
+            else {
+                if (alt[0].encodingFormat == "text/html") {
+                    log.info("Player: alternate is HTML");
+                    await loadHtml(alt[0].url);
+                    await loadAudio(readingOrderItem.url);
+                }
             }
         }
         else {
             log.info("Player: content is audio");
             loadCover(manifest);
-            loadAudio(readingOrderItem.url, autoplay, offset);
+            await loadAudio(readingOrderItem.url);
         }
     }
 }
@@ -49,34 +56,30 @@ function loadCover(manifest) {
 }
 
 async function loadHtml(url) {
-   await initIframe(url, "#player-page");
+    let iframeWindow = await initIframe(url, "#player-page");
+    setTimeout(() => {
+        Hilite.setContentWindow(iframeWindow);
+    }, 500);
 }
 
-function loadAudio(url, autoplay=true, offset=0) {
+async function loadAudio(url, vtt = null) {
     Controls.showAudioControls();
-    Events.on('Audio.ClipDone', onAudioClipDone);
-    Audio.playClip(url, autoplay, offset, -1, true);
+    Events.on('Audio.Done', onChapterDone);
+    if (vtt) {
+        await Audio.loadFile(url, vtt);
+        Controls.showSyncNarrationControls();
+    }
+    else {
+        await Audio.loadFile(url);
+    }
+    
 }
 
-async function loadSyncNarration(url, autoplay=true, offset=0) {
-    Controls.showSyncNarrationControls();
-    Events.on('Narrator.Done', onNarratorDone);
-    let data = await Utils.fetchFile(url);
-    let syncnarrJson = JSON.parse(data);
-    let htmlfile = new URL(syncnarrJson.properties.text, url).href;
-
-    let iframeDoc = await initIframe(htmlfile, "#player-page");
-    Narrator.setHtmlDocument(iframeDoc);
-    Narrator.loadJson(syncnarrJson, url, autoplay, offset);
+function onChapterDone() {
+    Events.trigger('Chapter.Done');
 }
 
-function onAudioClipDone(src) {
-    Events.trigger('Chapter.Done', src);
-}
 
-function onNarratorDone(src) {
-    Events.trigger('Chapter.Done', src);
-}
 
 export {
     play
