@@ -143,7 +143,6 @@ function nextCue() {
             activeCueIdx++;
             let startTime = cues[activeCueIdx].startTime;
             audio.currentTime = startTime;
-            console.log("start time", startTime);
         }
     }
     
@@ -169,8 +168,6 @@ function getActiveCueIndex() {
     let activeCues = audio.textTracks[0].activeCues;    
     let activeCueId = activeCues[activeCues.length - 1]?.id ?? -1;
     let activeCueIdx = Array.from(cues).findIndex(c => c.id == activeCueId);
-    console.log("ID", activeCueId);
-    console.log("IDX", activeCueIdx);
     return activeCueIdx;
 }
 
