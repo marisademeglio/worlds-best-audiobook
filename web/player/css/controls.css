@@ -142,7 +142,7 @@ line.mute-x:not(.muted) {
 #chapter-progress span {
     display: block;
 }
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
     footer {
         display: grid;
         grid-template-columns: 1fr;

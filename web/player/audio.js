@@ -124,14 +124,54 @@ function loadCues(audioElm, vttUrl) {
     track.src = vttUrl;
     track.onload = e => {
         let cues = audioElm.textTracks[0].cues;
-        console.log(cues);
-
         Array.from(cues).map(cue => {
-            cue.onenter = e => Highlight.enterCue(cue);
+            cue.onenter = e => Highlight.enterCue(cue)
         });
-    };
-    
+    }
     audioElm.append(track);
+}
+
+function nextCue() {
+    let activeCueIdx = getActiveCueIndex();
+    
+    if (activeCueIdx != -1) {
+        let cues = audio.textTracks[0].cues;
+        if (activeCueIdx == cues.length - 1) {
+            // DONE
+        }
+        else {
+            activeCueIdx++;
+            let startTime = cues[activeCueIdx].startTime;
+            audio.currentTime = startTime;
+            console.log("start time", startTime);
+        }
+    }
+    
+}
+
+function prevCue() {
+    
+    let activeCueIdx = getActiveCueIndex();
+    if (activeCueIdx != -1) {
+
+        if (activeCueIdx == 0) {
+            // AT START
+        }
+        else {
+            let cues = audio.textTracks[0].cues;
+            audio.currentTime = cues[activeCueIdx-1].startTime;
+        }
+    }
+}
+
+function getActiveCueIndex() {
+    let cues = audio.textTracks[0].cues;
+    let activeCues = audio.textTracks[0].activeCues;    
+    let activeCueId = activeCues[activeCues.length - 1]?.id ?? -1;
+    let activeCueIdx = Array.from(cues).findIndex(c => c.id == activeCueId);
+    console.log("ID", activeCueId);
+    console.log("IDX", activeCueIdx);
+    return activeCueIdx;
 }
 
 export { 
@@ -145,5 +185,7 @@ export {
     setVolume,
     mute,
     unmute,
-    isMuted
+    isMuted,
+    nextCue,
+    prevCue
 };

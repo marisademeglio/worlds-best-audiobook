@@ -1,6 +1,5 @@
 import * as Events from './events.js';
 import * as Audio from './audio.js';
-import * as Narrator from './narrator.js';
 import * as LocalData from '../common/localdata.js';
 import * as Utils from '../common/utils.js';
 
@@ -57,7 +56,7 @@ function init() {
 
 function next() {
     if (isSyncNarr) {
-        Narrator.next();
+        Audio.nextCue();
     }
     else {
         Audio.setPosition(Audio.getPosition() + 30);
@@ -65,7 +64,7 @@ function next() {
 }
 function prev() {
     if (isSyncNarr) {
-        Narrator.prev();
+        Audio.prevCue();
     }
     else {
         Audio.setPosition(Audio.getPosition() - 30);    
