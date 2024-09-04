@@ -48,6 +48,8 @@ table td:first-child {
     border-radius: 5px;
     cursor: auto;
     color: inherit;
+    width: min-content;
+    padding: 1rem;
 }
 #custom-highlight > fieldset {
     width: min-content;

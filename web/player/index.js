@@ -96,13 +96,6 @@ function loadContent(url, autoplay=true, offset=0) {
     }
 }
 
-function onNarratorHighlight(ids, innerHTML) {
-    document.querySelector("#player-captions").innerHTML = innerHTML;
-    if (localStorage.getItem("highlight")) {
-        document.querySelector("#player-captions").style.color = localStorage.getItem("highlight");
-    }
-}
-
 // event callback
 async function chapterPlaybackDone(src) {
     log.debug("Player: end of chapter", src);
@@ -111,7 +104,7 @@ async function chapterPlaybackDone(src) {
     if (src == '' || src == manifest.getCurrentReadingOrderItem().url) {
         let readingOrderItem = manifest.gotoNextReadingOrderItem();
         if (readingOrderItem) {
-            await loadContent(readingOrderItem.url);
+            loadContent(readingOrderItem.url);
         }
         else {
             log.debug("Player: end of book");
@@ -249,4 +242,3 @@ function onCaptionsOff() {
     document.querySelector("#player-captions").classList.add("disabled");
     document.querySelector("#player-page").classList.remove("disabled");
 }
-

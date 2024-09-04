@@ -3,6 +3,7 @@
 
 ::highlight(sync) {
     color: var(--hltext);
+    background-color: var(--hlbk);
 }
 
 main {

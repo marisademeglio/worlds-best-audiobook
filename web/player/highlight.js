@@ -20,6 +20,10 @@ function enterCue(cue) {
 function setContentWindow(win) {
     contentWindow = win;
     htmlDoc = win.document;
+    if (localStorage.getItem("use-custom-highlight")) {
+        htmlDoc.documentElement.style.setProperty("--hltext", localStorage.getItem("highlight"));
+        htmlDoc.documentElement.style.setProperty("--hlbk", localStorage.getItem("highlight-bk"));
+    }
 }
 
 function createRange(selector) {
