@@ -44,6 +44,13 @@ function init() {
     Events.on("Audio.Play", onPlay);
     Events.on("Audio.Pause", onPause);
 
+    // initialize the play/pause icons
+    document.querySelector("#pause").classList.add("disabled");
+    document.querySelector("#play").classList.remove("disabled");
+    document.querySelector("#play-pause").setAttribute("aria-label", "Play");
+    document.querySelector("#play-pause").setAttribute("title", "Play");
+    isPlaying = false;
+    
     document.querySelector("#play-pause").addEventListener("click", e => {
         if (isPlaying) {
             Audio.pause();
