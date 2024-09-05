@@ -2,8 +2,8 @@
 @import '../../common/colors.css';
 
 ::highlight(sync) {
-    color: var(--hltext);
-    background-color: var(--hlbk);
+    color: var(--highlight);
+    background-color: var(--highlight-bk);
 }
 
 main {
@@ -26,7 +26,7 @@ nav[role=doc-toc] ol {
 }
 
 nav[role=doc-toc] a.current, nav[role=doc-toc] a.current:visited {
-    color: var(--hltext);
+    color: var(--highlight);
     opacity: 0.9;
     transition: color 1s;
 }

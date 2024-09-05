@@ -11,6 +11,8 @@ function enterCue(cue) {
         let highlight = new Highlight(range);
         contentWindow.CSS.highlights.set("sync", highlight);
         let elm = htmlDoc.querySelector("#" + selector.value);
+        console.log("SElECTOR #", selector.value);
+        console.log("TEXT ", elm.textContent.trim());
         if (!isInViewport(elm, htmlDoc)) {
             elm.scrollIntoView();
         }
@@ -21,8 +23,8 @@ function setContentWindow(win) {
     contentWindow = win;
     htmlDoc = win.document;
     if (localStorage.getItem("use-custom-highlight")) {
-        htmlDoc.documentElement.style.setProperty("--hltext", localStorage.getItem("highlight"));
-        htmlDoc.documentElement.style.setProperty("--hlbk", localStorage.getItem("highlight-bk"));
+        htmlDoc.documentElement.style.setProperty("--highlight", localStorage.getItem("highlight"));
+        htmlDoc.documentElement.style.setProperty("--highlight-bk", localStorage.getItem("highlight-bk"));
     }
 }
 
@@ -36,8 +38,8 @@ function createRange(selector) {
         range = new StaticRange({
             startContainer: node,
             startOffset: 0,
-            endContainer: node.nextSibling ?? node,
-            endOffset: 0
+            endContainer: node.nextSibling,
+            endOffset: 100
         });
     }
     catch(err) {

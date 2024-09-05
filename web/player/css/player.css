@@ -103,7 +103,7 @@ iframe {
     font-size: 3rem;
     text-align: center;
     margin-top: 2rem;
-    color: var(--hltext);
+    color: var(--highlight);
     opacity: 0.9;
 }
 #edit-bookmarks {

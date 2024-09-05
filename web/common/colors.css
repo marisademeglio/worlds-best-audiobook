@@ -1,8 +1,8 @@
 :root {
     --bk: rgba(1,1,1,0.8);
     --text: white;
-    --hltext: yellow;
-    --hlbk: var(--bk);
+    --highlight: yellow;
+    --highlight-bk: black;
     --hover: lightyellow;
     --workaroundbk: rgba(1,1,1,0);
 }

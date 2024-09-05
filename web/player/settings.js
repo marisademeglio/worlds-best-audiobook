@@ -61,10 +61,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // select the right color
-    document.querySelector("#hl").value = currentHighlightColor;
+    document.querySelector("#highlight").value = currentHighlightColor;
     
     // listen for changes to highlight color
-    document.querySelector("#hl").addEventListener("change", e => {
+    document.querySelector("#highlight").addEventListener("change", e => {
         localStorage.setItem("highlight", e.target.value);
         refreshSampleTextStyle();
     });
@@ -77,18 +77,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // select the right color
-    document.querySelector("#hlbk").value = currentHighlightColorBk;
+    document.querySelector("#highlight-bk").value = currentHighlightColorBk;
     
     // listen for changes to highlightbk color
-    document.querySelector("#hlbk").addEventListener("change", e => {
+    document.querySelector("#highlight-bk").addEventListener("change", e => {
         localStorage.setItem("highlight-bk", e.target.value);
         refreshSampleTextStyle();
     });
 
     document.querySelector("#reset-highlight").addEventListener("click", e => {
         localStorage.setItem("highlight", HIGHLIGHT);
-        document.querySelector("#hl").value = HIGHLIGHT;
-        document.querySelector("#hlbk").value = HIGHLIGHTBK;
+        localStorage.setItem("highlight-bk", HIGHLIGHTBK);
+        document.querySelector("#highlight").value = HIGHLIGHT;
+        document.querySelector("#highlight-bk").value = HIGHLIGHTBK;
         refreshSampleTextStyle();
     });
 
