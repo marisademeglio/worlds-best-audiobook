@@ -51,3 +51,13 @@ Show how web standards make your audio books better.
 3. Go to `http://localhost:8080/web/library/`
 4. Click a title.
 
+# Development notes
+
+The `webvtt-experiment` branch is a move towards SyncMediaLite instead of a SMIL-like JSON representation of synchronization points, for the Audiobook + SyncMedia example.
+
+Because this demo player behaves like a "player" that loads content into an iframe, a few browser implementation issues come up with:
+
+- creating a CssHighlight in an iframe from outside the iframe
+- using CssHighlight at all in an iframe on an http server (e.g. localhost) vs https
+
+For these reasons, a little more investigation and development is still required when there is more time! 
